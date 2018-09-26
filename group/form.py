@@ -1,0 +1,31 @@
+from datetimepicker.widgets import DateTimePicker
+from django import forms
+from .models import Group, Shift
+
+
+class GroupForm(forms.ModelForm):
+    class Meta:
+        model = Group
+        fields = [
+            'name'
+        ]
+
+
+class ShiftForm(forms.ModelForm):
+    # valid_time_formats = ['%P', '%H:%M%A', '%H:%M %A', '%H:%M%a', '%H:%M %a']
+    # start_time = forms.TimeField(
+    #     widget=DateTimePicker(options={
+    #         "pickTime": True,
+    #         "pickDate": False,
+    #         "minuteStepping": 1,
+    #         "sideBySide": True,
+    #     }),
+    #     input_formats=valid_time_formats
+    # )
+    class Meta:
+        model = Shift
+        fields = [
+            'name',
+            'start_time',
+            'end_time'
+        ]

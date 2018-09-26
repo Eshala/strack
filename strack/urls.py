@@ -26,7 +26,7 @@ urlpatterns = [
     #course
     path('course/',include('course.urls',namespace='course')),
     #group
-    path('group/',include('group.urls',namespace='group')),
+    path('create/',include('group.urls',namespace='group')),
 
     path('home/',views.HomePage.as_view(), name='home'),
     path('thanks/',views.ThanksPage.as_view(), name='thanks'),

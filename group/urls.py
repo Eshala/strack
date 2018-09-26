@@ -4,5 +4,6 @@ from group import views
 app_name = 'group'
 
 urlpatterns = [
-   path('create/',views.CreateGroup.as_view(), name='group_create'),
+   path('group/',views.CreateGroup.as_view(), name='group_create'),
+   path('shift/',views.CreateShift.as_view(), name='shift_create'),
 ]
