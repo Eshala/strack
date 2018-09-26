@@ -20,9 +20,14 @@ from login import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',views.HomePage.as_view()),
+    #login
     path('accounts/',include('login.urls',namespace='login')),
     path('accounts/',include('django.contrib.auth.urls')),
+    #course
     path('course/',include('course.urls',namespace='course')),
+    #group
+    path('group/',include('group.urls',namespace='group')),
+
     path('home/',views.HomePage.as_view(), name='home'),
     path('thanks/',views.ThanksPage.as_view(), name='thanks'),
 ]
