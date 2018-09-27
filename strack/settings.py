@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'login',
     'course',
     'group',
+    'student',
     'bootstrap3',
 ]
 
