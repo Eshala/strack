@@ -17,10 +17,24 @@
 
 <!-- Links -->
 <ul class="nav navbar-nav">
-    <li class="active"><a href="{% url 'course:course_create'%}">add course<span class="sr-only">(current)</span></a></li>
-    <li><a href="{% url 'group:group_create'%}">add group</a></li>
-    <li><a href="{% url 'group:shift_create'%}">add shift</a></li>
-    <li><a href="{% url 'student:add_student'%}">add student</a></li>
+
+    <li class="dropdown">
+                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Course<b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="{% url 'course:course_create'%}">Add Course</a></li>
+
+                </ul>
+    </li>
+    <li class="dropdown">
+                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Student<b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="{% url 'group:group_create'%}">Add group</a></li>
+                    <li><a href="{% url 'group:shift_create'%}">Add shift</a></li>
+                    <li><a href="{% url 'student:add_student' %}">Add student</a></li>
+                    <li class="divider"></li>
+                    <li><a href="#">Trash</a></li>
+                </ul>
+    </li>
 </ul>
 
 <!-- Search (left) -->
@@ -45,3 +59,13 @@
 
 </div>
 </nav>
+
+
+
+<link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+
+
+
+<!-- include javascript, jQuery FIRST -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
