@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'login',
     'course',
+    'group',
+    'student',
     'bootstrap3',
 ]
 

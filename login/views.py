@@ -5,12 +5,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from . import register_user_form
 
-# Create your views here.
-
 
 class SignUP(CreateView):
     form_class = register_user_form.UserCreateForm
-    success_url = reverse_lazy('login')
+    success_url = reverse_lazy('home')
     template_name = 'accounts/register_user.html'
 
 
