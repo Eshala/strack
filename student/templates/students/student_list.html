@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+    <table class="table table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Address</th>
+                <th scope="col">Phone number</th>
+                <th scope="col">Fee submitted</th>
+                <th scope="col">Course</th>
+                <th scope="col">Group</th>
+                <th scope="col">Shift</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for student in object_list %}
+            <tr>
+                <td>{{ student.name }}</td>
+                <td>{{ student.address }}</td>
+                <td>{{ student.phone_number }}</td>
+                <td>{{ student.fee_submitted }}</td>
+                <td>{{ student.course }}</td>
+                <td>{{ student.group }}</td>
+                <td>{{ student.shift }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

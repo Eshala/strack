@@ -1,69 +1,85 @@
 <nav class="navbar navbar-default">
-<div class="container-fluid">
+    <div class="container-fluid">
 
-<!-- BRAND -->
-<div class="navbar-header">
-<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#alignment-example" aria-expanded="false">
-<span class="sr-only">Toggle navigation</span>
-<span class="icon-bar"></span>
-<span class="icon-bar"></span>
-<span class="icon-bar"></span>
-</button>
-<a class="navbar-brand" href="#">Your Brand</a>
-</div>
+        <!-- BRAND -->
+        <div class="navbar-header">
+{#            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"#}
+{#                    data-target="#alignment-example" aria-expanded="false">#}
+{#                <span class="sr-only">Toggle navigation</span>#}
+{#                <span class="icon-bar"></span>#}
+{#                <span class="icon-bar"></span>#}
+{#                <span class="icon-bar"></span>#}
+{#            </button>#}
+            <b class="navbar-brand" style="color: black">Bright Education Academy</b>
+        </div>
 
-<!-- COLLAPSIBLE NAVBAR -->
-<div class="collapse navbar-collapse" id="alignment-example">
+        <!-- COLLAPSIBLE NAVBAR -->
+        <div class="collapse navbar-collapse" id="alignment-example">
 
-<!-- Links -->
-<ul class="nav navbar-nav">
+            <!-- Links -->
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">Teachers<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{% url 'course:course_create' %}">Add Teacher</a></li>
+                        <li><a href="{% url 'group:group_create' %}">Teacher List</a></li>
 
-    <li class="dropdown">
-                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Course<b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li><a href="{% url 'course:course_create'%}">Add Course</a></li>
+                    </ul>
+                </li>
+                 <li class="dropdown">
+                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">Expenses<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{% url 'course:course_create' %}">Expense Report</a></li>
+                        <li><a href="{% url 'group:group_create' %}">Add Bill</a></li>
 
-                </ul>
-    </li>
-    <li class="dropdown">
-                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Student<b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li><a href="{% url 'group:group_create'%}">Add group</a></li>
-                    <li><a href="{% url 'group:shift_create'%}">Add shift</a></li>
-                    <li><a href="{% url 'student:add_student' %}">Add student</a></li>
-                    <li class="divider"></li>
-                    <li><a href="#">Trash</a></li>
-                </ul>
-    </li>
-</ul>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">Student<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{% url 'student:add_student' %}">Add Student</a></li>
+                         <li><a href="{% url 'student:add_student' %}">Edit Student</a></li>
+                         <li><a href="{% url 'student:list_student' %}">List Student</a></li>
+{#                        <li class="divider"></li>#}
+{#                        <li><a href="#">Trash</a></li>#}
+                    </ul>
+                </li>
+                 <li class="dropdown">
+                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">Options<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{% url 'course:course_create' %}">Add Course</a></li>
+                        <li><a href="{% url 'group:group_create' %}">Add group</a></li>
+                        <li><a href="{% url 'group:shift_create' %}">Add shift</a></li>
 
-<!-- Search (left) -->
-<form class="navbar-form navbar-left" role="search">
-<div class="form-group">
-<input type="text" class="form-control">
-</div>
-<button type="submit" class="btn btn-default">Search</button>
-</form>
+                    </ul>
+                </li>
+            </ul>
 
-<!-- Link (right) -->
+{#            <!-- Search (left) -->#}
+{#            <form class="navbar-form navbar-left" role="search">#}
+{#                <div class="form-group">#}
+{#                    <input type="text" class="form-control">#}
+{#                </div>#}
+{#                <button type="submit" class="btn btn-default">Search</button>#}
+{#            </form>#}
 
-<ul class="nav navbar-nav navbar-right">
-    {% if user.is_authenticated %}
-    <li><a href="{% url 'login:logout'%}">logout</a></li>
-    {% else %}
-    <li><a href="{% url 'login:login'%}">login</a></li>
-    {% endif %}
-</ul>
+            <!-- Link (right) -->
 
-</div>
+            <ul class="nav navbar-nav navbar-right">
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'login:logout' %}">logout</a></li>
+                {% else %}
+                    <li><a href="{% url 'login:login' %}">login</a></li>
+                {% endif %}
+            </ul>
 
-</div>
+        </div>
+
+    </div>
 </nav>
 
 
-
 <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
-
 
 
 <!-- include javascript, jQuery FIRST -->

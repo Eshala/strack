@@ -5,7 +5,8 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView
 
 from .models import Student
-
+from django.views.generic.list import ListView
+from django.utils import timezone
 
 class AddStudent(LoginRequiredMixin, CreateView):
     login_url = '/admin/login/'
@@ -25,3 +26,11 @@ class AddStudent(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
+
+class StudentList(LoginRequiredMixin, ListView):
+    login_url = '/accounts/login/'
+    template_name = 'students/student_list.html'
+    queryset = Student.objects.all()
+    context_object_name = 'student'
+    paginate_by = 20
+

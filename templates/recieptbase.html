@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} {% endblock title %}</title>
+    <style type="text/css">
+        h1, h3 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1> Bright Education Academy (BEA) </h1>
+    <h3>ThapaThali road, Kathmandu </h3>
+    <h3>01-4240213</h3>
+
+   {% block student-detail %}{% endblock student-detail %}
+
+</div>
+
+</body>
+</html>
