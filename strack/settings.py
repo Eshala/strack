@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'group',
     'student',
     'bootstrap3',
+    'django_filters',
 ]
 
 MIDDLEWARE = [

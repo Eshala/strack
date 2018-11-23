@@ -1,0 +1,21 @@
+<!--Blue select-->
+<form>
+    <div class="container">
+        <label>Courses</label>
+
+        <select id="course" class="mdb-select md-form colorful-select dropdown-primary" searchable="Search here..">
+            {% for course in course_data %}
+            <option value={{ forloop.counter }}>{{ course.title }}</option>
+            {% endfor %}
+        </select>
+
+        <label>Groups</label>
+
+        <select id="group" class="mdb-select md-form colorful-select dropdown-primary" searchable="Search here..">
+            {% for group in group_data %}
+            <option value={{ forloop.counter }}>{{ group.name }}</option>
+            {% endfor %}
+        </select>
+        <input type="button" value="Search" id="search">
+    </div>
+</form>
