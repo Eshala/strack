@@ -13,6 +13,8 @@ class Student(models.Model):
     course = models.ForeignKey(Course, null=True, on_delete=models.CASCADE)
     group = models.ForeignKey(Group, null=True, on_delete=models.CASCADE)
     shift = models.ForeignKey(Shift, null=True, on_delete=models.CASCADE)
+    photo = models.FileField(upload_to='bea', blank=True)
+    marks = models.DecimalField(max_digits=3, decimal_places=2, default=0, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
 
     def __str__(self):
@@ -25,6 +27,7 @@ class Teacher(models.Model):
     course = models.ForeignKey(Course, null=True, on_delete=models.CASCADE)
     group = models.ForeignKey(Group, null=True, on_delete=models.CASCADE)
     shift = models.ForeignKey(Shift, null=True, on_delete=models.CASCADE)
+    photo = models.FileField(upload_to='bea', blank=True)
     timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
 
     def __str__(self):

@@ -67,7 +67,7 @@
 
             <ul class="nav navbar-nav navbar-right">
                 {% if user.is_authenticated %}
-                    <li><a href="{% url 'login:logout' %}">logout</a></li>
+                    <li><span>Hi {{ user.username.title }}, &nbsp; <a href="{% url 'login:logout' %}">logout</a></span></li>
                 {% else %}
                     <li><a href="{% url 'login:login' %}">login</a></li>
                 {% endif %}
