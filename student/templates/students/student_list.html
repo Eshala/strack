@@ -34,7 +34,7 @@
         <tbody>
         {% for student in filter.qs %}
             <tr>
-                <td>{{ student.name }}</td>
+                <td><a href="{% url 'student:studentdetail' student.id %}">{{ student.name }}</a></td>
                 <td>{{ student.address }}</td>
                 <td>{{ student.phone_number }}</td>
                 {% if isTeacher %}
