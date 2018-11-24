@@ -17,3 +17,16 @@ class Student(models.Model):
 
     def __str__(self):
         return self.name
+
+class Teacher(models.Model):
+    name = models.CharField(max_length=120)
+    address = models.CharField(max_length=120)
+    phone_number = models.IntegerField(null=True)
+    course = models.ForeignKey(Course, null=True, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, null=True, on_delete=models.CASCADE)
+    shift = models.ForeignKey(Shift, null=True, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
+
+    def __str__(self):
+        return self.name
+

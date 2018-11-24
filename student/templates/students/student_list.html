@@ -11,8 +11,8 @@
 {#{% endblock %}#}
 {% block content %}
 
-{#    {% include 'search.html' with course_data=course group_data=group %}#}
-     <form action="" method="get" class="form form-inline">
+    {#    {% include 'search.html' with course_data=course group_data=group %}#}
+    <form action="" method="get" class="form form-inline">
         {% bootstrap_form filter.form layout='inline' %}
         {% bootstrap_button 'filter' %}
     </form>
@@ -23,19 +23,23 @@
             <th scope="col">Name</th>
             <th scope="col">Address</th>
             <th scope="col">Phone number</th>
-            <th scope="col">Fee submitted</th>
+            {% if isTeacher %}
+                <th scope="col">Fee submitted</th>
+            {% endif %}
             <th scope="col">Course</th>
             <th scope="col">Group</th>
             <th scope="col">Shift</th>
         </tr>
         </thead>
         <tbody>
-         {% for student in filter.qs %}
+        {% for student in filter.qs %}
             <tr>
                 <td>{{ student.name }}</td>
                 <td>{{ student.address }}</td>
                 <td>{{ student.phone_number }}</td>
-                <td>{{ student.fee_submitted }}</td>
+                {% if isTeacher %}
+                    <td>{{ student.fee_submitted }}</td>
+                {% endif %}
                 <td>{{ student.course }}</td>
                 <td>{{ student.group }}</td>
                 <td>{{ student.shift }}</td>

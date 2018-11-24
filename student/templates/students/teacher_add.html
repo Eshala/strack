@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+
+{% block content %}
+<div class="container">
+  <h1>Add Teacher</h1>
+  <form class="" method="post">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    <input type="submit" name="add" class="btn btn-success" value="Add">
+    <input type="submit" name="add_print" class="btn btn-success" value="Add and print reciept">
+  </form>
+
+</div>
+{% endblock %}
