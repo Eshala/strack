@@ -4,7 +4,7 @@
 {% block content %}
 <div class="container">
   <h1>Add Student</h1>
-  <form class="" method="post">
+  <form class="" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {% bootstrap_form form %}
     <input type="submit" name="add" class="btn btn-success" value="Add">

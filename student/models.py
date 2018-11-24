@@ -17,6 +17,9 @@ class Student(models.Model):
     marks = models.DecimalField(max_digits=3, decimal_places=2, default=0, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
 
+    class Meta:
+        ordering = ['name']
+
     def __str__(self):
         return self.name
 

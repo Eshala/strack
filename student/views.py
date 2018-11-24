@@ -26,6 +26,7 @@ class AddStudent(LoginRequiredMixin, CreateView):
         'course',
         'group',
         'shift',
+        'photo',
     ]
     template_name = 'students/student_add.html'
     success_url = reverse_lazy('home')
@@ -61,6 +62,20 @@ class StudentDetail(LoginRequiredMixin, DetailView):
         return context
     pass
 
+class TeacherDetail(LoginRequiredMixin, DetailView):
+    login_url = '/admin/login/'
+    template_name = 'students/studentdetail.html'
+    success_url = reverse_lazy('home')
+    model = Student
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        print(self.kwargs['pk'])
+        context['student'] = Teacher.objects.get(id= self.kwargs['pk'])
+        context['isTeacher'] = True
+        return context
+    pass
+
 class AddTeacher(LoginRequiredMixin, CreateView):
     login_url = '/admin/login/'
     model = Teacher
@@ -71,6 +86,7 @@ class AddTeacher(LoginRequiredMixin, CreateView):
         'course',
         'group',
         'shift',
+        'photo',
     ]
     template_name = 'students/teacher_add.html'
     success_url = reverse_lazy('home')

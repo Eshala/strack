@@ -23,7 +23,7 @@
             <th scope="col">Name</th>
             <th scope="col">Address</th>
             <th scope="col">Phone number</th>
-            {% if isTeacher %}
+            {% if not isTeacher %}
                 <th scope="col">Fee submitted</th>
             {% endif %}
             <th scope="col">Course</th>
@@ -34,10 +34,10 @@
         <tbody>
         {% for student in filter.qs %}
             <tr>
-                <td><a href="{% url 'student:studentdetail' student.id %}">{{ student.name }}</a></td>
+                <td><a href="{% if isTeacher %}{% url 'student:teacherdetail' student.id %}{% else %}{% url 'student:studentdetail' student.id %}{% endif %}">{{ student.name }}</a></td>
                 <td>{{ student.address }}</td>
                 <td>{{ student.phone_number }}</td>
-                {% if isTeacher %}
+                {% if not isTeacher %}
                     <td>{{ student.fee_submitted }}</td>
                 {% endif %}
                 <td>{{ student.course }}</td>
