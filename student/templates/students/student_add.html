@@ -1,15 +1,25 @@
 {% extends 'base.html' %}
 {% load bootstrap3 %}
-
+{% block css %}
+    <link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel = "stylesheet">
+    <script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+{% endblock %}
 {% block content %}
-<div class="container">
-  <h1>Add Student</h1>
-  <form class="" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {% bootstrap_form form %}
-    <input type="submit" name="add" class="btn btn-success" value="Add">
-    <input type="submit" name="add_print" class="btn btn-success" value="Add and print reciept">
-  </form>
+    <div class="container">
+        <h1>Add Student</h1>
+        <form class="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            <input type="submit" name="add" class="btn btn-success" value="Add">
+            <input type="submit" name="add_print" class="btn btn-success" value="Add and print reciept">
+        </form>
 
-</div>
+    </div>
+
+     <script>
+       $(document).on("click", "#id_joined_date", function () {
+          $( "#id_joined_date" ).datepicker();
+        });
+    </script>
+
 {% endblock %}

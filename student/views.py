@@ -1,6 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
+from django.forms import forms
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -11,7 +12,7 @@ from django.urls import reverse
 from course.models import Course
 from group.models import Group
 from student.filters import StudentFilter, TeacherFilter
-from .models import Student, Teacher
+from .models import Student, Teacher, Pay
 from django.views.generic.list import ListView
 from django.utils import timezone
 import django_filters
@@ -29,10 +30,17 @@ class AddStudent(LoginRequiredMixin, CreateView):
         'course',
         'group',
         'shift',
+        'joined_date',
         'photo',
     ]
     template_name = 'students/student_add.html'
     success_url = reverse_lazy('home')
+
+    # def get_form(self, form_class=None):
+    #     if form_class is None:
+    #         form_class = self.get_form_class()
+    #     form_class.__dict__['base_fields']['joined_date'].widget = (forms.SelectDateWidget())
+    #     return form_class(**self.get_form_kwargs())
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -65,6 +73,7 @@ class updateDetail(LoginRequiredMixin, UpdateView):
         'course',
         'group',
         'shift',
+        'joined_date',
         'photo',
     ]
     template_name = 'students/student_add.html'
@@ -82,7 +91,9 @@ class StudentDetail(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         print(self.kwargs['pk'])
-        context['student'] = Student.objects.get(id= self.kwargs['pk'])
+        data = Student.objects.get(id= self.kwargs['pk']);
+        context['student'] = data
+        context['remaining'] = data.course.price - data.fee_submitted
         return context
     pass
 
@@ -99,6 +110,13 @@ class TeacherDetail(LoginRequiredMixin, DetailView):
         context['isTeacher'] = True
         return context
     pass
+
+class PayBill(LoginRequiredMixin, CreateView):
+    login_url = '/admin/login/'
+    success_url = reverse_lazy('home')
+    fields = ['pay_to', 'amount', 'by_cheque', 'cheque_no', 'type', 'paid_date']
+    template_name = 'students/billpay.html'
+    model = Pay
 
 class AddTeacher(LoginRequiredMixin, CreateView):
     login_url = '/admin/login/'

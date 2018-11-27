@@ -1,8 +1,9 @@
 from django.urls import path
+
 from student import views
+from student.models import Pay
 
 app_name = 'student'
-
 urlpatterns = [
    path('add/', views.AddStudent.as_view(), name='add_student'),
    path('add/student', views.AddTeacher.as_view(), name='add_teacher'),
@@ -11,4 +12,5 @@ urlpatterns = [
    path('studentdetail/<int:pk>/', views.StudentDetail.as_view(), name='studentdetail'),
    path('teacherdetail/<int:pk>/', views.TeacherDetail.as_view(), name='teacherdetail'),
    path('update/<int:pk>', views.updateDetail.as_view(), name='update'),
+   path('bill/', views.PayBill.as_view(), name='paybill'),
 ]

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+{% block css %}
+    <link href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
+    <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+{% endblock %}
+{% block js %}
+    <script>
+        $(document).ready(function () {
+            $("label[for='id_cheque_no']").hide();
+            $('#id_cheque_no').hide();
+
+            $(document).on('change', 'input[Id="id_by_cheque"]', function (e) {
+                if ($('#id_by_cheque').is(':checked')) {
+                    $("label[for='id_cheque_no']").show();
+                    $('#id_cheque_no').show();
+                } else {
+                    $("label[for='id_cheque_no']").hide();
+                    $('#id_cheque_no').hide();
+                }
+            });
+        });
+    </script>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <h1>Payment Bill </h1>
+        <form class="" method="post">
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            <input type="submit" name="add" class="btn btn-success" value="PAYMENT">
+        </form>
+
+    </div>
+
+    <script>
+        $(document).on("click", "#id_joined_date", function () {
+            $("#id_joined_date").datepicker();
+        });
+    </script>
+
+{% endblock %}
