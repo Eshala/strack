@@ -1,11 +1,13 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from django.views.generic import DetailView
-
+from django.views.generic import UpdateView
+from django.urls import reverse
 from course.models import Course
 from group.models import Group
 from student.filters import StudentFilter, TeacherFilter
@@ -14,6 +16,7 @@ from django.views.generic.list import ListView
 from django.utils import timezone
 import django_filters
 from django.shortcuts import get_object_or_404
+from django.shortcuts import redirect
 
 class AddStudent(LoginRequiredMixin, CreateView):
     login_url = '/admin/login/'
@@ -48,6 +51,27 @@ class AddStudent(LoginRequiredMixin, CreateView):
 #         context['group'] = Group.objects.all()
 #         # And so on for more models
 #         return context
+
+class updateDetail(LoginRequiredMixin, UpdateView):
+    login_url = '/admin/login/'
+    model = Student
+    success_url = reverse_lazy('home')
+    pk_url_kwarg = 'pk'
+    fields = [
+        'name',
+        'address',
+        'phone_number',
+        'fee_submitted',
+        'course',
+        'group',
+        'shift',
+        'photo',
+    ]
+    template_name = 'students/student_add.html'
+    def form_valid(self, form):
+        post = form.save(commit=False)
+        post.save()
+        return redirect('../studentdetail/'+str(self.object.pk))
 
 class StudentDetail(LoginRequiredMixin, DetailView):
     login_url = '/admin/login/'

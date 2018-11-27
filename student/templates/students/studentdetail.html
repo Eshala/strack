@@ -107,8 +107,8 @@
                         <div class="profile-img">
                             <img src="/media/{% if student.photo %}{{ student.photo }}{% else %}bea/profile.png{% endif %}" alt=""/>
                             <div class="file btn btn-lg btn-primary">
-                                <b>Edit Profile</b>
-                                <input type="file" name="file"/>
+                                <a href="{% url 'student:update' student.id %}"><b>Edit Profile</b></a>
+{#                                <input type="file" name="file"/>#}
                             </div>
                         </div>
                     </div>
@@ -117,6 +117,9 @@
                                     <h3>
                                        Name : {{ student.name }}
                                     </h3>
+                                    <h4>
+                                       Phone Number : {{ student.phone_number }}
+                                    </h4>
                                     <h4>
                                        Course : {{ student.course.title }}
                                     </h4>
