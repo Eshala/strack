@@ -30,7 +30,7 @@
                     <a href="#" data-toggle="dropdown" class="dropdown-toggle">Expenses<b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a href="{% url 'student:paybill' %}">Add Bill</a></li>
-                        <li><a href="{% url 'course:course_create' %}">Report</a></li>
+                        <li><a href="{% url 'student:report' %}">Report</a></li>
 
                     </ul>
                 </li>
@@ -38,8 +38,10 @@
                     <a href="#" data-toggle="dropdown" class="dropdown-toggle">Student<b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a href="{% url 'student:add_student' %}">Add Student</a></li>
-                         <li><a href="{% url 'student:add_student' %}">Edit Student</a></li>
                          <li><a href="{% url 'student:list_student' %}">List Student</a></li>
+                         <li><a href="{% url 'student:add_student' %}">Enquiry</a></li>
+                        <li><a href="{% url 'student:add_student' %}">Result</a></li>
+
 {#                        <li class="divider"></li>#}
 {#                        <li><a href="#">Trash</a></li>#}
                     </ul>
@@ -50,7 +52,7 @@
                         <li><a href="{% url 'course:course_create' %}">Add Course</a></li>
                         <li><a href="{% url 'group:group_create' %}">Add group</a></li>
                         <li><a href="{% url 'group:shift_create' %}">Add shift</a></li>
-
+                        <li><a href="{% url 'group:subject_create' %}">Add Subject</a></li>
                     </ul>
                 </li>
             </ul>

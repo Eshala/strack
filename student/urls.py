@@ -13,4 +13,5 @@ urlpatterns = [
    path('teacherdetail/<int:pk>/', views.TeacherDetail.as_view(), name='teacherdetail'),
    path('update/<int:pk>', views.updateDetail.as_view(), name='update'),
    path('bill/', views.PayBill.as_view(), name='paybill'),
+   path('bill/list/', views.bill_report, name='report'),
 ]

@@ -152,7 +152,10 @@
                 <div class="row">
 {#                    <div class="col-md-4">#}
                         <button type="button" class="btn btn-success col-md-3" style="margin-left: 50px">{% if isTeacher %}PAY{% else %}RECIEVE {% endif %} REMAINING</button>
-{#                        <div class="profile-work">#}
+                       {% if not isTeacher %}
+                        <button type="button" class="btn btn-success col-md-3" style="margin-left: 50px">MARKS ENTRY</button>
+                     {% endif %}
+                    <div class="profile-work">
 {#                            <p>WORK LINK</p>#}
 {#                            <a href="">Website Link</a><br/>#}
 {#                            <a href="">Bootsnipp Profile</a><br/>#}

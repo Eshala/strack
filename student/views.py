@@ -11,7 +11,7 @@ from django.views.generic import UpdateView
 from django.urls import reverse
 from course.models import Course
 from group.models import Group
-from student.filters import StudentFilter, TeacherFilter
+from student.filters import StudentFilter, TeacherFilter, BillFilter
 from .models import Student, Teacher, Pay
 from django.views.generic.list import ListView
 from django.utils import timezone
@@ -114,7 +114,7 @@ class TeacherDetail(LoginRequiredMixin, DetailView):
 class PayBill(LoginRequiredMixin, CreateView):
     login_url = '/admin/login/'
     success_url = reverse_lazy('home')
-    fields = ['pay_to', 'amount', 'by_cheque', 'cheque_no', 'type', 'paid_date']
+    fields = ['pay_to', 'amount', 'by_cheque', 'cheque_no', 'type', 'remarks', 'paid_date']
     template_name = 'students/billpay.html'
     model = Pay
 
@@ -146,3 +146,8 @@ def search_teacher(request):
     teacher_list = Teacher.objects.all()
     teacher_filter = TeacherFilter(request.GET, queryset=teacher_list)
     return render(request, 'students/student_list.html', {'filter': teacher_filter, 'isTeacher': True})
+
+def bill_report(request):
+    bill_list = Pay.objects.all()
+    bill_filter = BillFilter(request.GET, queryset=bill_list)
+    return render(request, 'students/billreport.html', {'filter': bill_filter})

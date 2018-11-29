@@ -1,15 +1,22 @@
 from datetimepicker.widgets import DateTimePicker
 from django import forms
-from .models import Group, Shift
+from .models import Group, Shift, Subject
 
 
 class GroupForm(forms.ModelForm):
     class Meta:
         model = Group
         fields = [
-            'name'
+            'name',
+            'subject_name',
         ]
 
+class SubjectForm(forms.ModelForm):
+    class Meta:
+        model = Subject
+        fields = [
+            'name'
+        ]
 
 class ShiftForm(forms.ModelForm):
     # valid_time_formats = ['%P', '%H:%M%A', '%H:%M %A', '%H:%M%a', '%H:%M %a']

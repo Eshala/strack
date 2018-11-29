@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+{% block content %}
+    <form action="" method="get" class="form form-inline">
+        {% bootstrap_form filter.form layout='inline' %}
+        {% bootstrap_button 'filter' %}
+    </form>
+
+    <table class="table table-bordered">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">S.N.</th>
+            <th scope="col">Paid To</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Date</th>
+            <th scope="col">By Cash</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for bill in filter.qs %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{% if pay.type == 'T' or pay.type == 'S' %}<a href="#">{{ bill.pay_to }}</a> {% else %} {{ bill.pay_to }} {% endif %}</td>
+                <td>{{ bill.amount }}</td>
+                <td>{{ bill.paid_date }}</td>
+                <td>{% if bill.by_cheque %} No {% else %} Yes {% endif %}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

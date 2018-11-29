@@ -39,15 +39,15 @@ class Teacher(models.Model):
         return self.name
 
 class Pay(models.Model):
-    type = (("T", "Teacher"), ("S", "Student"), ("O", "Other"),)
+    type = (("C", "Commision"), ("k", "Kitchen Expenses"), ("STAT", "Stationary"),("A", "Advertisement"),("R", "Rent"),("EW", "Electricity and Water"),("Phone and Internet", "PI"),("Miscellnous", "M"),)
 
     pay_to = models.CharField(max_length=200, blank=False)
-    amount = models.DecimalField(decimal_places=2, default=0, blank=False, max_digits=5)
+    amount = models.DecimalField(decimal_places=2, default=0, blank=False, max_digits=10)
     paid_date = models.DateTimeField(blank=False, default=datetime.now())
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.CASCADE)
-    type = models.CharField(choices=type, max_length=50, default="O", blank=False)
+    type = models.CharField(choices=type, max_length=50, default="M", blank=False)
     by_cheque = models.BooleanField(default=False)
-    cheque_no = models.DecimalField(decimal_places=0, blank=True, max_digits=5)
+    cheque_no = models.DecimalField(decimal_places=2, blank=True, max_digits=10, null=True)
     courses = models.CharField(max_length=100, blank=True, null=True, editable=False)
     group = models.CharField(max_length=100, blank=True, null=True, editable=False)
     shift = models.CharField(max_length=100, blank=True, null=True, editable=False)

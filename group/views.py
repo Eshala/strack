@@ -17,3 +17,8 @@ class CreateShift(CreateView):
     form_class = form.ShiftForm
     success_url = reverse_lazy('group:shift_create')
     template_name = 'shift/create_shift.html'
+
+class createSubject(CreateView):
+    form_class = form.SubjectForm
+    success_url = reverse_lazy('group:subject_create')
+    template_name = 'subject/create_subject.html'
