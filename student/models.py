@@ -39,7 +39,7 @@ class Teacher(models.Model):
         return self.name
 
 class Pay(models.Model):
-    type = (("C", "Commision"), ("k", "Kitchen Expenses"), ("STAT", "Stationary"),("A", "Advertisement"),("R", "Rent"),("EW", "Electricity and Water"),("Phone and Internet", "PI"),("Miscellnous", "M"),)
+    type = (("C", "Commision"), ("k", "Kitchen Expenses"), ("STAT", "Stationary"),("A", "Advertisement"),("R", "Rent"),("EW", "Electricity and Water"),("PI", "Phone and Internet"),("M", "Miscellnous"),)
 
     pay_to = models.CharField(max_length=200, blank=False)
     amount = models.DecimalField(decimal_places=2, default=0, blank=False, max_digits=10)
