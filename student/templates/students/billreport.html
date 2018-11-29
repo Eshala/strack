@@ -1,5 +1,13 @@
 {% extends 'base.html' %}
 {% load bootstrap3 %}
+{% block js %}
+    <script>
+        $(document).ready(function () {
+            $("#id_paid_date__lt").attr('type', 'date');
+            $("#id_paid_date__gt").attr('type', 'date');
+        });
+    </script>
+{% endblock %}
 {% block content %}
     <form action="" method="get" class="form form-inline">
         {% bootstrap_form filter.form layout='inline' %}
@@ -20,7 +28,8 @@
         {% for bill in filter.qs %}
             <tr>
                 <td>{{ forloop.counter }}</td>
-                <td>{% if pay.type == 'T' or pay.type == 'S' %}<a href="#">{{ bill.pay_to }}</a> {% else %} {{ bill.pay_to }} {% endif %}</td>
+                <td>{% if pay.type == 'T' or pay.type == 'S' %}<a href="#">{{ bill.pay_to }}</a> {% else %}
+                    {{ bill.pay_to }} {% endif %}</td>
                 <td>{{ bill.amount }}</td>
                 <td>{{ bill.paid_date }}</td>
                 <td>{% if bill.by_cheque %} No {% else %} Yes {% endif %}</td>

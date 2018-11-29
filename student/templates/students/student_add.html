@@ -1,8 +1,15 @@
 {% extends 'base.html' %}
 {% load bootstrap3 %}
+{% block js %}
+    <script>
+        $(document).ready( function () {
+            $("#id_joined_date").attr('type', 'date');
+        });
+    </script>
+{% endblock %}
 {% block css %}
-    <link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel = "stylesheet">
-    <script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+    <link href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
+    <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 {% endblock %}
 {% block content %}
     <div class="container">
@@ -15,11 +22,5 @@
         </form>
 
     </div>
-
-     <script>
-{#       $(document).on("click", "#id_joined_date", function () {#}
-          $( "#id_joined_date" ).datepicker();
-{#        });#}
-    </script>
 
 {% endblock %}
