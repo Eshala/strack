@@ -13,7 +13,7 @@ class Subject(models.Model):
 
 class Group(models.Model):
     name = models.CharField(max_length=120)
-    subject_name = models.ForeignKey(Subject, blank=True, null=True, on_delete = models.CASCADE)
+    subject_name = models.ManyToManyField(Subject, blank=True, null=True)
 
     def __str__(self):
         return self.name

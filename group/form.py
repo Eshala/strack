@@ -4,6 +4,9 @@ from .models import Group, Shift, Subject
 
 
 class GroupForm(forms.ModelForm):
+    subject_name = forms.ModelMultipleChoiceField(
+        queryset= Subject.objects.all(),
+        widget=forms.CheckboxSelectMultiple)
     class Meta:
         model = Group
         fields = [
