@@ -4,6 +4,8 @@ from course.models import Course
 from group.models import Group, Shift
 from datetime import datetime
 from django import forms
+from django.contrib.auth.models import User
+
 
 class Student(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.CASCADE)
@@ -44,7 +46,7 @@ class Pay(models.Model):
     pay_to = models.CharField(max_length=200, blank=False)
     amount = models.DecimalField(decimal_places=2, default=0, blank=False, max_digits=10)
     paid_date = models.DateTimeField(blank=False, default=datetime.now())
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, blank=True, on_delete=models.CASCADE)
     type = models.CharField(choices=type, max_length=50, default="M", blank=False)
     by_cheque = models.BooleanField(default=False)
     cheque_no = models.DecimalField(decimal_places=2, blank=True, max_digits=10, null=True)
@@ -52,6 +54,7 @@ class Pay(models.Model):
     group = models.CharField(max_length=100, blank=True, null=True, editable=False)
     shift = models.CharField(max_length=100, blank=True, null=True, editable=False)
     remarks = models.TextField(blank=True)
+    payto_id = models.CharField(max_length=10, blank=True, null=True, default="none")
 
     class Meta:
         ordering = ['paid_date']

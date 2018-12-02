@@ -2,6 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
 from django.forms import forms
+from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -18,6 +19,8 @@ from django.utils import timezone
 import django_filters
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
+import json
+from django.views.decorators.csrf import csrf_exempt
 
 class AddStudent(LoginRequiredMixin, CreateView):
     login_url = '/admin/login/'
@@ -93,6 +96,7 @@ class StudentDetail(LoginRequiredMixin, DetailView):
         print(self.kwargs['pk'])
         data = Student.objects.get(id= self.kwargs['pk']);
         context['student'] = data
+        context['fees'] = Pay.objects.filter(type='STU', payto_id= data.id)
         context['remaining'] = data.course.price - data.fee_submitted
         return context
     pass
@@ -117,6 +121,12 @@ class PayBill(LoginRequiredMixin, CreateView):
     fields = ['pay_to', 'amount', 'by_cheque', 'cheque_no', 'type', 'remarks', 'paid_date']
     template_name = 'students/billpay.html'
     model = Pay
+    def form_valid(self, form):
+        pay = form.save(commit=False)
+        pay.user = self.request.user
+        pay.save()
+        return super().form_valid(form)
+
 
 class AddTeacher(LoginRequiredMixin, CreateView):
     login_url = '/admin/login/'
@@ -136,6 +146,24 @@ class AddTeacher(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
+
+def updatePay(request):
+    if request.method == 'POST':
+        try:
+            pay_to = request.POST.get('pay_to')
+            amount = request.POST.get('amount')
+            type = request.POST.get('type')
+            group = request.POST.get('group')
+            course = request.POST.get('course')
+            remarks = request.POST.get('remarks')
+            payto_id = request.POST.get('payto_id')
+            print(request.user)
+            pay = Pay(pay_to=pay_to, amount=amount, type=type, user=request.user, group=group, courses=course, paid_date=timezone.now(), remarks=remarks, payto_id=payto_id)
+            pay.save()
+            return HttpResponse(json.dumps({'status': True, 'fee_added': amount}))
+        except :
+            return HttpResponse(json.dumps({'status': False}))
+        pass
 
 def search_student(request):
     student_list = Student.objects.all()
