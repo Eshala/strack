@@ -11,9 +11,9 @@ from django.views.generic import DetailView
 from django.views.generic import UpdateView
 from django.urls import reverse
 from course.models import Course
-from group.models import Group
+from group.models import Group, Shift
 from student.filters import StudentFilter, TeacherFilter, BillFilter
-from .models import Student, Teacher, Pay
+from .models import Student, Teacher, Pay, GroupCourse
 from django.views.generic.list import ListView
 from django.utils import timezone
 import django_filters
@@ -21,6 +21,9 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 import json
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Sum
+import functools
+
 
 class AddStudent(LoginRequiredMixin, CreateView):
     login_url = '/admin/login/'
@@ -29,10 +32,7 @@ class AddStudent(LoginRequiredMixin, CreateView):
         'name',
         'address',
         'phone_number',
-        'fee_submitted',
-        'course',
-        'group',
-        'shift',
+        'discount',
         'joined_date',
         'photo',
     ]
@@ -72,10 +72,7 @@ class updateDetail(LoginRequiredMixin, UpdateView):
         'name',
         'address',
         'phone_number',
-        'fee_submitted',
-        'course',
-        'group',
-        'shift',
+        'discount',
         'joined_date',
         'photo',
     ]
@@ -84,6 +81,15 @@ class updateDetail(LoginRequiredMixin, UpdateView):
         post = form.save(commit=False)
         post.save()
         return redirect('../studentdetail/'+str(self.object.pk))
+
+
+def calculateTotal(fees):
+    total = 0
+    for fee in fees:
+        total += fee.amount
+    return total
+    pass
+
 
 class StudentDetail(LoginRequiredMixin, DetailView):
     login_url = '/admin/login/'
@@ -96,21 +102,28 @@ class StudentDetail(LoginRequiredMixin, DetailView):
         print(self.kwargs['pk'])
         data = Student.objects.get(id= self.kwargs['pk']);
         context['student'] = data
-        context['fees'] = Pay.objects.filter(type='STU', payto_id= data.id)
-        context['remaining'] = data.course.price - data.fee_submitted
+        fees = Pay.objects.filter(payto_id= self.kwargs['pk'], type__contains='STU')
+        context['total'] = calculateTotal(fees)
+        context['fees'] = fees
+        context['group'] = list(Group.objects.values_list('name', flat=True))
+        context['shift'] = Shift.objects.values_list('name', flat=True)
+        context['course'] = Course.objects.values_list('title', flat=True)
+        context['coursegroup'] = GroupCourse.objects.filter(person_type__contains='STU', person_id=self.kwargs['pk'])
         return context
     pass
+
 
 class TeacherDetail(LoginRequiredMixin, DetailView):
     login_url = '/admin/login/'
     template_name = 'students/studentdetail.html'
     success_url = reverse_lazy('home')
-    model = Student
+    model = Teacher
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         print(self.kwargs['pk'])
         context['student'] = Teacher.objects.get(id= self.kwargs['pk'])
+        context['fees'] = Pay.objects.filter(type='TEA', payto_id=self.kwargs['pk'])
         context['isTeacher'] = True
         return context
     pass
@@ -135,9 +148,6 @@ class AddTeacher(LoginRequiredMixin, CreateView):
         'name',
         'address',
         'phone_number',
-        'course',
-        'group',
-        'shift',
         'photo',
     ]
     template_name = 'students/teacher_add.html'
@@ -157,12 +167,11 @@ def updatePay(request):
             course = request.POST.get('course')
             remarks = request.POST.get('remarks')
             payto_id = request.POST.get('payto_id')
-            print(request.user)
             pay = Pay(pay_to=pay_to, amount=amount, type=type, user=request.user, group=group, courses=course, paid_date=timezone.now(), remarks=remarks, payto_id=payto_id)
             pay.save()
-            return HttpResponse(json.dumps({'status': True, 'fee_added': amount}))
+            return HttpResponse(json.dumps({'status': True, 'message': str(amount)+ "added"}))
         except :
-            return HttpResponse(json.dumps({'status': False}))
+            return HttpResponse(json.dumps({'status': False, 'message': 'Problems in adding the amount'}))
         pass
 
 def search_student(request):
@@ -179,3 +188,19 @@ def bill_report(request):
     bill_list = Pay.objects.all()
     bill_filter = BillFilter(request.GET, queryset=bill_list)
     return render(request, 'students/billreport.html', {'filter': bill_filter})
+
+def addCourseandShifts(request):
+    try:
+        course = request.POST.get('course')
+        group = request.POST.get('group')
+        shift = request.POST.get('shift')
+        user_type = request.POST.get('type')
+        user_id = request.POST.get('uid')
+        print("{}, {}, {},{}".format(course, group, shift, user_id))
+        courseshift = GroupCourse(course=course, group=group, shift=shift, person_type=user_type, person_id = user_id)
+        courseshift.save()
+        return HttpResponse(json.dumps({'status': True, 'message': 'Added successfully in the database'}))
+    except:
+        print("cannot saved")
+        return HttpResponse(json.dumps({'status': False, 'message': 'Cannot add the course, Please try again'}))
+    pass

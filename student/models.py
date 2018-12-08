@@ -12,10 +12,7 @@ class Student(models.Model):
     name = models.CharField(max_length=120)
     address = models.CharField(max_length=120)
     phone_number = models.IntegerField(null=True)
-    fee_submitted = models.IntegerField(default=0)
-    course = models.ForeignKey(Course, null=True, on_delete=models.CASCADE)
-    group = models.ForeignKey(Group, null=True, on_delete=models.CASCADE)
-    shift = models.ForeignKey(Shift, null=True, on_delete=models.CASCADE)
+    discount = models.IntegerField(default=0)
     photo = models.FileField(upload_to='bea', blank=True)
     marks = models.DecimalField(max_digits=3, decimal_places=2, default=0, blank=True)
     joined_date = models.DateField(blank=False, default= datetime.now())
@@ -27,13 +24,18 @@ class Student(models.Model):
     def __str__(self):
         return self.name
 
+class GroupCourse(models.Model):
+    course = models.CharField(max_length=100, null=True, blank=True)
+    group = models.CharField(max_length=100, null=True, blank=True)
+    shift = models.CharField(max_length=100, null=True, blank=True)
+    person_id = models.CharField(max_length=10, blank=False, default = 0)
+    person_type = models.CharField(max_length = 10, blank = False, default="STU")
+    marks = models.IntegerField(default=0, blank=True)
+
 class Teacher(models.Model):
     name = models.CharField(max_length=120)
     address = models.CharField(max_length=120)
     phone_number = models.IntegerField(null=True)
-    course = models.ForeignKey(Course, null=True, on_delete=models.CASCADE)
-    group = models.ForeignKey(Group, null=True, on_delete=models.CASCADE)
-    shift = models.ForeignKey(Shift, null=True, on_delete=models.CASCADE)
     photo = models.FileField(upload_to='bea', blank=True)
     timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
 
@@ -42,7 +44,6 @@ class Teacher(models.Model):
 
 class Pay(models.Model):
     type = (("C", "Commision"), ("k", "Kitchen Expenses"), ("STAT", "Stationary"),("A", "Advertisement"),("R", "Rent"),("EW", "Electricity and Water"),("PI", "Phone and Internet"),("M", "Miscellnous"),)
-
     pay_to = models.CharField(max_length=200, blank=False)
     amount = models.DecimalField(decimal_places=2, default=0, blank=False, max_digits=10)
     paid_date = models.DateTimeField(blank=False, default=datetime.now())

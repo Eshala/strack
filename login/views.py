@@ -18,3 +18,4 @@ class HomePage(LoginRequiredMixin, TemplateView):
 
 class ThanksPage(TemplateView):
     template_name = 'thanks.html'
+

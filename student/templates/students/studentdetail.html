@@ -2,45 +2,82 @@
 {% load static %}
 {% block css %}
     <link href="{% static 'css/profile.css' %}" rel="stylesheet">
+    <link href="{% static 'css/homemore.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block js %}
     <script>
         $(document).ready(function () {
+            $(".alert").alert('close');
             $('#edit_profile').click(function (e) {
                 e.preventDefault();
                 $(window).attr("location", "{% url 'student:update' pk=student.pk %}");
             });
 
+            $.ajaxSetup({
+                beforeSend: function (xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                    }
+                }
+            });
+
             $("#add_fee").click(function (e) {
                 e.preventDefault();
                 var payLoad = {
-                    'pay_to': '\'{{ student.name }}\'',
+                    'pay_to': "{{ student.name }}",
                     'amount': $("#amount").val(),
-                    'type': 'STU',
-                    'course': '\'{{ student.course.title }}\'',
+                    'type': "{% if isTeacher %} TEA {% else %} STU{% endif %}",
+                    'course': "{{ student.course.title }}",
                     'remarks': 'Fees from student',
-                    'payto_id': '\'{{ student.id }}\''
+                    'payto_id': "{{ student.id }}"
                 };
                 console.log(payLoad);
-                function csrfSafeMethod(method) {
-                    // these HTTP methods do not require CSRF protection
-                    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-                }
 
-                $.ajaxSetup({
-                    beforeSend: function (xhr, settings) {
-                        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-                        }
-                    }
-                });
                 $.post("{% url 'student:updatepay' %}", payLoad)
+                        .done(function (data) {
+                            var obj = jQuery.parseJSON(data);
+                            if (obj.status) {
+
+                            }
+                            showRequestStatus(obj);
+                        });
+            });
+
+
+            $("#addcourse").click(function (e) {
+                e.preventDefault();
+                var payLoad = {
+                    'course': $("#select_course option:selected").val(),
+                    'shift': $("#select_shift option:selected").val(),
+                    'group': $("#select_group option:selected").val(),
+                    'uid': "{{ student.id }}",
+                    'type': "{% if isTeacher %} TEA {% else %} STU{% endif %}",
+                };
+                console.log(payLoad);
+
+
+                $.post("{% url 'student:addcoursegroup' %}", payLoad)
                         .done(function (data) {
                             alert("Data Loaded: " + data);
                         });
             });
+
+            $("div.bhoechie-tab-menu>div.list-group>a").click(function (e) {
+                e.preventDefault();
+                $(this).siblings('a.active').removeClass("active");
+                $(this).addClass("active");
+                var index = $(this).index();
+                $("div.bhoechie-tab>div.bhoechie-tab-content").removeClass("active");
+                $("div.bhoechie-tab>div.bhoechie-tab-content").eq(index).addClass("active");
+            });
+
         });
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
 
         function getTodayDate() {
             var tdate = new Date();
@@ -48,7 +85,6 @@
             var MM = tdate.getMonth(); //yields month
             var yyyy = tdate.getFullYear(); //yields year
             var currentDate = dd + "-" + ( MM + 1) + "-" + yyyy;
-
             return currentDate;
         }
 
@@ -67,69 +103,203 @@
             }
             return cookieValue;
         }
+
+        countTotal();
+        function countTotal() {
+            var totals = 0;
+            console.log(totals);
+            var $dataRows = $("#sum_table tr:not('.totalColumn, .titlerow')");
+            $dataRows.each(function (i) {
+                {#                console.log(i);#}
+                console.log($(this).find('.amount_paid').html());
+            });
+            $("td.totalCol").html("total:" + totals);
+
+        }
+
+        function showRequestStatus(obj) {
+            var message = obj.message;
+            $('.alert').alert();
+            console.log("alert in " + obj.status);
+            if (obj.status) {
+
+            } else {
+
+            }
+
+        }
+
     </script>
 {% endblock %}
 
 {% block content %}
     <div class="container emp-profile">
-        <form method="post">
-            {% csrf_token %}
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="profile-img">
-                        <img src="/media/{% if student.photo %}{{ student.photo }}{% else %}bea/profile.png{% endif %}"
-                             alt=""/>
-                    </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="profile-img">
+                    <img src="/media/{% if student.photo %}{{ student.photo }}{% else %}bea/profile.png{% endif %}"
+                         alt=""/>
                 </div>
-                <div class="col-md-6">
-                    <div class="profile-head">
-                        <h5>
-                            {{ student.name }}
-                        </h5>
-                        <h6>
-                            Remaining Due : Rs. {{ remaining }}
-                        </h6>
-                        <div class="col-xs-8">
-                            <input class="form-control col-md-6" type="text" id="amount" placeholder="Rs 00000">
-                            <button class="btn btn-success" style="margin-top: 8px" id="add_fee"> Add Amount</button>
+            </div>
+            <div class="col-md-6">
+                <div class="alert alert-warning alert-dismissible fade show" role="alert" id="alert">
+                    <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="profile-head">
+
+                    <h3>{{ student.name }} </h3> <b class="text-muted">{% if isTeacher %} Teacher {% else %}
+                    Student{% endif %}</b>
+                    <hr>
+                    <p>
+                        <b class="text-primary">Name :</b> {{ student.name }}<br>
+
+                        <b class="text-primary"> Phone Number : </b> {{ student.phone_number }}<br>
+                        {% if not isTeacher %}
+                            <b class="text-primary"> Joined Date: </b>{{ student.joined_date }}<br>
+
+                        {% endif %}
+
+                    </p>
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="profile-work" style="margin-top: 4px;">
+                    <button type="button" class="btn btn-success" id="edit_profile" style="width: 100%">Edit
+                        Profile
+                    </button>
+
+                </div>
+            </div>
+            <div class="col-md-8">
+                <h3> {% if isTeacher %} Teacher {% else %} Student {% endif %} Details</h3>
+                <hr>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-8 col-xs-9 bhoechie-tab-container">
+                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-8 bhoechie-tab-menu">
+                                <div class="list-group">
+                                    <a href="#" class="list-group-item active text-center">
+                                        <h4 class="glyphicon glyphicon-plane"></h4><br/>Add Deposit
+                                    </a>
+                                    <a href="#" class="list-group-item text-center">
+                                        <h4 class="glyphicon glyphicon-road"></h4><br/>Pay Details
+                                    </a>
+                                    <a href="#" class="list-group-item text-center">
+                                        <h4 class="glyphicon glyphicon-home"></h4><br/>Add Course
+                                    </a>
+                                    <a href="#" class="list-group-item text-center">
+                                        <h4 class="glyphicon glyphicon-cutlery"></h4><br/>Course Detail
+                                    </a>
+                                    <a href="#" class="list-group-item text-center">
+                                        <h4 class="glyphicon glyphicon-credit-card"></h4><br/>Add marks
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9 bhoechie-tab">
+                                <!-- flight section -->
+                                <div class="bhoechie-tab-content active">
+                                    <div class="form-group">
+                                        <label for="amount" class="control-label">Amount Paid</label>
+                                        <input class="form-control col-md-6" type="text" id="amount"
+                                               placeholder="Rs 00000">
+                                    </div>
+                                    <button class="btn btn-success" id="add_fee" style="margin-top:10px">
+                                        Add Amount
+                                    </button>
+
+                                </div>
+                                <!-- train section -->
+                                <div class="bhoechie-tab-content">
+                                    <center>
+                                        <table class="table table-bordered" id="pay_table">
+                                            <tr class="title_row">
+                                                <th>S.n.</th>
+                                                <th>Amount (Rs)</th>
+                                                <th>Paid Date</th>
+                                            </tr>
+                                            {% for fee in fees %}
+                                                <tr>
+                                                    <td> {{ forloop.counter }}</td>
+                                                    <td class="amount_paid">{{ fee.amount }}</td>
+                                                    <td>{{ fee.paid_date }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                            <tr class="totalColumn">
+                                                <td class="totalCol" colspan="3" style="text-align: right"><b>Total
+                                                    :
+                                                    &nbsp;&nbsp;&nbsp;{{ total }}</b></td>
+                                            </tr>
+                                        </table>
+                                    </center>
+                                </div>
+
+                                <!-- Add course -->
+                                <div class="bhoechie-tab-content">
+                                    {% include 'students/addcourse.html' with shift_data=shift group_data=group course_data=course %}
+                                </div>
+                                <div class="bhoechie-tab-content">
+                                    {% if coursegroup %}
+                                        <table class="table table-bordered">
+
+                                            <tr>
+                                                <th>Course</th>
+                                                <th>Group</th>
+                                                <th>Shift</th>
+                                                {% if not isTeacher %}
+                                                    <th>Marks</th>
+                                                {% endif %}
+                                                <th>Action</th>
+                                            </tr>
+
+                                            {% for cg in coursegroup %}
+                                                <tr>
+                                                    <td> {{ cg.course }}</td>
+                                                    <td> {{ cg.group }}</td>
+                                                    <td> {{ cg.shift }}</td>
+                                                    {% if not isTeacher %}
+                                                        <td>
+                                                            <input type="text" id="mark_{{ forloop.counter }}"
+                                                                   name="mark_{{ forloop.counter }}" maxlength="2"
+                                                                   value="{{ cg.marks }}">
+                                                        </td>
+                                                    {% endif %}
+                                                    <td>
+                                                        <button type="button" class="btn btn-default btn-sm">
+                                                                <span class="glyphicon glyphicon-remove"
+                                                                      aria-hidden="true"></span>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+
+                                        </table>
+
+                                    {% else %}
+                                        <center>
+                                            <h3>Course is not added yet, Please add course.</h3>
+                                        </center>
+                                    {% endif %}
+                                </div>
+                                <div class="bhoechie-tab-content">
+                                    <center>
+                                        <h1 class="glyphicon glyphicon-credit-card"
+                                            style="font-size:12em;color:#55518a"></h1>
+                                        <h2 style="margin-top: 0;color:#55518a">Comming Soon</h2>
+                                        <h3 style="margin-top: 0;color:#55518a">Credit Card</h3>
+                                    </center>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-2">
-                    <button type="button" class="btn btn-success" id="edit_profile">Edit Profile</button>
-                </div>
+
             </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="profile-work">
-                        <h3>About</h3>
-                        <hr>
-                        <p>
-                            <b class="text-primary">Name :</b> {{ student.name }}<br>
-
-                            <b class="text-primary"> Phone Number : </b> {{ student.phone_number }}<br>
-
-                            <b class="text-primary">Course :</b> {{ student.course.title }}<br>
-
-                            <b class="text-primary">Shift : </b> {{ student.shift.name }}<br>
-
-                            <b class="text-primary">Group: </b> {{ student.group.name }}<br>
-                            {% if not isTeacher %}
-                                <b class="text-primary"> Joined Date: </b>{{ student.joined_date }}<br>
-                                <b class="text-primary">Fee submitted : </b><span>Rs. {{ student.fee_submitted }}</span>
-                                <br>
-
-                            {% endif %}
-                        </p>
-                    </div>
-                </div>
-
-                <div class="col-md-8">
-                    <table>
-
-                    </table>
-                </div>
-            </div>
-        </form>
+        </div>
     </div>
 {% endblock %}

@@ -1,0 +1,28 @@
+<div class="form-group">
+    <label for="select_course">Course</label>
+    <select class="form-control" id="select_course">
+        {% for course in course_data %}
+            <option>{{ course }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="select_group">Group</label>
+    <select class="form-control" id="select_group">
+        {% for group in group_data %}
+            <option>{{ group }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="select_shift">Shift</label>
+    <select class="form-control" id="select_shift">
+        {% for shift in shift_data %}
+            <option>{{ shift }}</option>
+        {% endfor %}
+    </select>
+</div>
+
+<input type="submit" class="btn btn-success" value="Add Course" id="addcourse">
+
+
+
+

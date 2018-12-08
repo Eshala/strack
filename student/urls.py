@@ -15,4 +15,5 @@ urlpatterns = [
    path('bill/', views.PayBill.as_view(), name='paybill'),
    path('bill/list/', views.bill_report, name='report'),
    path('updatepay/', views.updatePay, name='updatepay'),
+   path('addcourseandgroup/', views.addCourseandShifts, name='addcoursegroup'),
 ]

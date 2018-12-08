@@ -7,10 +7,7 @@ class StudentFilter(django_filters.FilterSet):
     class Meta:
         model = Student
         fields = {
-            'name': ['icontains', ],
-            'course': ['exact', ],
-            'group':['exact', ],
-            'shift':['exact', ]
+            'name': ['icontains', ]
         }
 
 
@@ -19,9 +16,6 @@ class TeacherFilter(django_filters.FilterSet):
         model = Teacher
         fields = {
             'name': ['icontains', ],
-            'course': ['exact', ],
-            'group': ['exact', ],
-            'shift': ['exact', ]
         }
 
 class BillFilter(django_filters.FilterSet):

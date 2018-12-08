@@ -23,9 +23,9 @@
             <th scope="col">Name</th>
             <th scope="col">Address</th>
             <th scope="col">Phone number</th>
-            {% if not isTeacher %}
-                <th scope="col">Fee submitted</th>
-            {% endif %}
+{#            {% if not isTeacher %}#}
+{#                <th scope="col">Fee submitted</th>#}
+{#            {% endif %}#}
             <th scope="col">Course</th>
             <th scope="col">Group</th>
             <th scope="col">Shift</th>
@@ -37,9 +37,9 @@
                 <td><a href="{% if isTeacher %}{% url 'student:teacherdetail' student.id %}{% else %}{% url 'student:studentdetail' student.id %}{% endif %}">{{ student.name }}</a></td>
                 <td>{{ student.address }}</td>
                 <td>{{ student.phone_number }}</td>
-                {% if not isTeacher %}
-                    <td>{{ student.fee_submitted }}</td>
-                {% endif %}
+{#                {% if not isTeacher %}#}
+{#                    <td>{{ student.fee_submitted }}</td>#}
+{#                {% endif %}#}
                 <td>{{ student.course }}</td>
                 <td>{{ student.group }}</td>
                 <td>{{ student.shift }}</td>
