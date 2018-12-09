@@ -23,6 +23,7 @@ class BillFilter(django_filters.FilterSet):
         model = Pay
         fields = {
             'type': ['exact', ],
+            'transaction_type':['exact',],
             'paid_date': ['gt','lt'],
             'user': ['exact']
         }

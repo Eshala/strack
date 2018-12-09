@@ -8,33 +8,33 @@
     </style>
 {% endblock %}
 {% block js %}
-    <script>
-        $(document).ready(function () {
-            var max_fields = 5; //maximum input boxes allowed
-            var wrapper = $(".input_fields_wrap"); //Fields wrapper
-            var add_button = $(".add_field_button"); //Add button ID
-            var x = 1;
-            $(add_button).click(function () {
-                console.log(x);
-                if (x <= max_fields) {
-                    $(wrapper).append('<div class="form-group">' +
-                            '<label class="control-label" for="id_name">Name</label>' +
-                            '<input type="text" name="id_input_'+x+'" class = "form-control"/>' +
-                            '<button class="remove_field btn btn-info mt-2">Remove</a>' +
-                            '</div>');
-                      x++;
-                } else {
-                  window.alert("Maximum limit reached");
-                }
-
-            });
-            $(wrapper).on("click", ".remove_field", function (e) { //user click on remove text
-                $(this).parent('div').remove();
-                x--;
-            })
-
-        });
-    </script>
+{#    <script>#}
+{#        $(document).ready(function () {#}
+{#            var max_fields = 5; //maximum input boxes allowed#}
+{#            var wrapper = $(".input_fields_wrap"); //Fields wrapper#}
+{#            var add_button = $(".add_field_button"); //Add button ID#}
+{#            var x = 1;#}
+{#            $(add_button).click(function () {#}
+{#                console.log(x);#}
+{#                if (x <= max_fields) {#}
+{#                    $(wrapper).append('<div class="form-group">' +#}
+{#                            '<label class="control-label" for="id_name">Name</label>' +#}
+{#                            '<input type="text" name="id_input_'+x+'" class = "form-control"/>' +#}
+{#                            '<button class="remove_field btn btn-info mt-2">Remove</a>' +#}
+{#                            '</div>');#}
+{#                      x++;#}
+{#                } else {#}
+{#                  window.alert("Maximum limit reached");#}
+{#                }#}
+{##}
+{#            });#}
+{#            $(wrapper).on("click", ".remove_field", function (e) { //user click on remove text#}
+{#                $(this).parent('div').remove();#}
+{#                x--;#}
+{#            })#}
+{##}
+{#        });#}
+{#    </script>#}
 {% endblock js %}
 
 {% block content %}
@@ -49,7 +49,7 @@
             </div>
             <div class="row">
                 <input type="submit" class="btn btn-success" value="Add Subject">
-                 <button class="add_field_button btn btn-info">Add More Subjects</button>
+{#                 <button class="add_field_button btn btn-info">Add More Subjects</button>#}
             </div>
         </form>
 

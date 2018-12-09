@@ -69,7 +69,8 @@
                     'type': "{% if isTeacher %} TEA {% else %} STU{% endif %}",
                     'course': "{{ student.course.title }}",
                     'remarks': 'Fees from student',
-                    'payto_id': "{{ student.id }}"
+                    'payto_id': "{{ student.id }}",
+                    'transaction_type': "{% if isTeacher %} C {% else %} D{% endif %}"
                 };
                 console.log(payLoad);
 
@@ -263,9 +264,8 @@
                                                 </tr>
                                             {% endfor %}
                                             <tr class="totalColumn">
-                                                <td class="totalCol" colspan="3" style="text-align: right"><b>Total
-                                                    :
-                                                    &nbsp;&nbsp;&nbsp;{{ total }}</b></td>
+                                                <td class="totalCol" colspan="3" style="text-align: right"><b>Total :</b>
+                                                    &nbsp;&nbsp;&nbsp;Rs {{ total }}</td>
                                             </tr>
                                         </table>
                                     </center>

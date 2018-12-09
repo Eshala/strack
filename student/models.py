@@ -44,6 +44,7 @@ class Teacher(models.Model):
 
 class Pay(models.Model):
     type = (("C", "Commision"), ("k", "Kitchen Expenses"), ("STAT", "Stationary"),("A", "Advertisement"),("R", "Rent"),("EW", "Electricity and Water"),("PI", "Phone and Internet"),("M", "Miscellnous"),)
+    t_type = (("C", "Credit"), ("D", "Debit"))
     pay_to = models.CharField(max_length=200, blank=False)
     amount = models.DecimalField(decimal_places=2, default=0, blank=False, max_digits=10)
     paid_date = models.DateTimeField(blank=False, default=datetime.now())
@@ -56,6 +57,7 @@ class Pay(models.Model):
     shift = models.CharField(max_length=100, blank=True, null=True, editable=False)
     remarks = models.TextField(blank=True)
     payto_id = models.CharField(max_length=10, blank=True, null=True, default="none")
+    transaction_type = models.CharField(choices=t_type, max_length=2, default="C", blank=False)
 
     class Meta:
         ordering = ['paid_date']

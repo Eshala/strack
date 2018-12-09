@@ -144,15 +144,21 @@ class TeacherDetail(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         print(self.kwargs['pk'])
         context['student'] = Teacher.objects.get(id= self.kwargs['pk'])
-        context['fees'] = Pay.objects.filter(type='TEA', payto_id=self.kwargs['pk'])
+        fees = Pay.objects.filter(type__contains='TEA', payto_id=self.kwargs['pk'])
+        context['fees'] = fees
+        context['total'] = calculateTotal(fees)
         context['isTeacher'] = True
+        context['group'] = list(Group.objects.values_list('name', flat=True))
+        context['shift'] = Shift.objects.values_list('name', flat=True)
+        context['course'] = Course.objects.values_list('title', flat=True)
+        context['coursegroup'] = GroupCourse.objects.filter(person_type__contains='TEA', person_id=self.kwargs['pk'])
         return context
     pass
 
 class PayBill(LoginRequiredMixin, CreateView):
     login_url = '/admin/login/'
     success_url = reverse_lazy('home')
-    fields = ['pay_to', 'amount', 'by_cheque', 'cheque_no', 'type', 'remarks', 'paid_date']
+    fields = ['pay_to', 'amount', 'by_cheque', 'cheque_no', 'type', 'remarks', 'transaction_type', 'paid_date']
     template_name = 'students/billpay.html'
     model = Pay
     def form_valid(self, form):
@@ -188,9 +194,10 @@ def updatePay(request):
             course = request.POST.get('course')
             remarks = request.POST.get('remarks')
             payto_id = request.POST.get('payto_id')
-            pay = Pay(pay_to=pay_to, amount=amount, type=type, user=request.user, group=group, courses=course, paid_date=timezone.now(), remarks=remarks, payto_id=payto_id)
+            transaction_type = request.POST.get('transaction_type')
+            pay = Pay(pay_to=pay_to, amount=amount, type=type, user=request.user, group=group, courses=course, paid_date=timezone.now(), remarks=remarks, payto_id=payto_id, transaction_type=transaction_type)
             pay.save()
-            return HttpResponse(json.dumps({'status': True, 'message': str(amount)+ "added"}))
+            return HttpResponse(json.dumps({'status': True, 'message': str(amount)+ " paid successfully"}))
         except :
             return HttpResponse(json.dumps({'status': False, 'message': 'Problems in adding the amount'}))
         pass
@@ -205,13 +212,34 @@ def search_teacher(request):
     teacher_filter = TeacherFilter(request.GET, queryset=teacher_list)
     return render(request, 'students/student_list.html', {'filter': teacher_filter, 'isTeacher': True})
 
+
+def getIncomeExpense(bill_list):
+    income_expense = {'total':0,
+                      'expense':0,
+                      'remain':0}
+    income = 0
+    expense = 0
+    for bill in bill_list :
+        if bill.transaction_type == 'C':
+            expense += int(bill.amount)
+        else:
+            income += int(bill.amount)
+    total = income + expense
+    income_expense['expense'] = expense
+    income_expense['total'] = total
+    income_expense['remain'] = income
+    return income_expense
+    pass
+
+
 def bill_report(request):
     if request.user.is_superuser:
         bill_list = Pay.objects.all()
     else:
         bill_list = Pay.objects.filter(user=request.user)
     bill_filter = BillFilter(request.GET, queryset=bill_list)
-    return render(request, 'students/billreport.html', {'filter': bill_filter})
+    income_expense = getIncomeExpense(bill_list)
+    return render(request, 'students/billreport.html', {'filter': bill_filter, 'expense':income_expense['expense'], 'total': income_expense['total'], 'remain': income_expense['remain']})
 
 def addCourseandShifts(request):
     try:
