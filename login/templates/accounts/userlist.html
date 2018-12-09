@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h3 style="text-align: center">All Signed Users</h3>
+
+    <table class="table table-bordered">
+        <tr>
+            <th>S.n.</th>
+            <th>User Name</th>
+            <th>Email</th>
+            <th>Active</th>
+            <th>Action</th>
+        </tr>
+        {% for u in user %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td> {{ u.username.title }}</td>
+                <td>{{ u.email }}</td>
+                <td>{{ u.is_active }}</td>
+                <td>
+
+                    {% if u.is_active %}
+                        <button id="cg_remove" type="button" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"
+                                  data-id="{{ cg.id }}"> Deaactive</span>
+                        </button>
+                    {% else %}
+                        <button id="cg_remove" type="button" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"
+                                  data-id="{{ cg.id }}"> Deaactive</span>
+                        </button>
+                    {% endif %}
+
+                </td>
+            </tr>
+        {% endfor %}
+
+    </table>
+{% endblock %}

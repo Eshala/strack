@@ -24,4 +24,5 @@ class BillFilter(django_filters.FilterSet):
         fields = {
             'type': ['exact', ],
             'paid_date': ['gt','lt'],
+            'user': ['exact']
         }

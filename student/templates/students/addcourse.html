@@ -21,6 +21,11 @@
     </select>
 </div>
 
+{% if not teacher %}
+    <label for="marks">Shift</label>
+    <input type="number" id="input_marks" class="form-control" maxlength="2" >
+
+{% endif %}
 <input type="submit" class="btn btn-success" value="Add Course" id="addcourse">
 
 

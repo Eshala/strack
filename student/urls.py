@@ -16,4 +16,7 @@ urlpatterns = [
    path('bill/list/', views.bill_report, name='report'),
    path('updatepay/', views.updatePay, name='updatepay'),
    path('addcourseandgroup/', views.addCourseandShifts, name='addcoursegroup'),
+   path('delete/', views.course_delete_view, name='deletecoursegroup'),
+   path('updatemarks/', views.course_mark_update_view, name='updatecoursegroup'),
+
 ]

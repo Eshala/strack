@@ -23,7 +23,7 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Sum
 import functools
-
+from django.contrib import messages
 
 class AddStudent(LoginRequiredMixin, CreateView):
     login_url = '/admin/login/'
@@ -49,6 +49,27 @@ class AddStudent(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
     pass
+
+def course_delete_view(request):
+    print("in delete request")
+    if request.method == "POST" and request.user.is_authenticated:
+        id = request.POST.get('id')
+        cg = get_object_or_404(GroupCourse, id=id)
+        cg.delete()
+        messages.success(request, "Course group successfully deleted!")
+        return HttpResponse(json.dumps({"status":True, "message": "deleted successfully"}))
+    return HttpResponse(json.dumps({"status": False, "message": "deleted failed"}))
+
+def course_mark_update_view(request):
+    print("in update request")
+    if request.method == "POST" and request.user.is_authenticated:
+       id = request.POST.get('id')
+       cg = get_object_or_404(GroupCourse, id=id)
+       cg.marks = request.POST.get('marks')
+       cg.save()
+       messages.success(request, "marks successfully updated!")
+       return HttpResponse(json.dumps({"status":True, "message": "marks successfully updated"}))
+            # return HttpResponse(json.dumps({"status": False, "message": "marks update failed"}))
 
 # class StudentList(LoginRequiredMixin, ListView):
 #     login_url = '/accounts/login/'
@@ -185,7 +206,10 @@ def search_teacher(request):
     return render(request, 'students/student_list.html', {'filter': teacher_filter, 'isTeacher': True})
 
 def bill_report(request):
-    bill_list = Pay.objects.all()
+    if request.user.is_superuser:
+        bill_list = Pay.objects.all()
+    else:
+        bill_list = Pay.objects.filter(user=request.user)
     bill_filter = BillFilter(request.GET, queryset=bill_list)
     return render(request, 'students/billreport.html', {'filter': bill_filter})
 

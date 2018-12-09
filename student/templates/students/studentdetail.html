@@ -22,6 +22,45 @@
                 }
             });
 
+            $(".btn-mark-update").click(function (e) {
+                e.preventDefault();
+                 var id = $(e.target).data('id');
+                 var marks =$(e.target).closest("tr").find('.input-marks').val();
+                 console.log(marks);
+                var payLoad = {
+                    'id': id,
+                    'marks': marks,
+                };
+                console.log(payLoad);
+
+                $.post("{% url 'student:updatecoursegroup' %}", payLoad)
+                        .done(function (data) {
+                            showRequestStatus(data);
+                        });
+            });
+
+            $(".btn-course-rem").click(function (e) {
+                e.preventDefault();
+                var result = confirm("Do you want to delete course ?");
+                if (result) {
+                    var id = $(e.target).data('id');
+                    console.log(id);
+                    var payLoad = {
+                        'id': id,
+                    };
+                    console.log(payLoad);
+                    $.post("{% url 'student:deletecoursegroup' %}", payLoad)
+                            .done(function (data) {
+                                showRequestStatus(data);
+                            });
+                } else {
+
+                }
+
+
+            });
+
+
             $("#add_fee").click(function (e) {
                 e.preventDefault();
                 var payLoad = {
@@ -36,11 +75,7 @@
 
                 $.post("{% url 'student:updatepay' %}", payLoad)
                         .done(function (data) {
-                            var obj = jQuery.parseJSON(data);
-                            if (obj.status) {
-
-                            }
-                            showRequestStatus(obj);
+                            showRequestStatus(data);
                         });
             });
 
@@ -59,7 +94,7 @@
 
                 $.post("{% url 'student:addcoursegroup' %}", payLoad)
                         .done(function (data) {
-                            alert("Data Loaded: " + data);
+                            showRequestStatus(data);
                         });
             });
 
@@ -117,16 +152,12 @@
 
         }
 
-        function showRequestStatus(obj) {
-            var message = obj.message;
+        function showRequestStatus(data) {
+            location.reload();
+            var obj = jQuery.parseJSON(data);
             $('.alert').alert();
             console.log("alert in " + obj.status);
-            if (obj.status) {
-
-            } else {
-
-            }
-
+            alert(obj.message);
         }
 
     </script>
@@ -159,6 +190,7 @@
                         <b class="text-primary"> Phone Number : </b> {{ student.phone_number }}<br>
                         {% if not isTeacher %}
                             <b class="text-primary"> Joined Date: </b>{{ student.joined_date }}<br>
+                             <b class="text-primary"> Discount: </b>Rs {{ student.discount }}<br>
 
                         {% endif %}
 
@@ -196,9 +228,9 @@
                                     <a href="#" class="list-group-item text-center">
                                         <h4 class="glyphicon glyphicon-cutlery"></h4><br/>Course Detail
                                     </a>
-                                    <a href="#" class="list-group-item text-center">
-                                        <h4 class="glyphicon glyphicon-credit-card"></h4><br/>Add marks
-                                    </a>
+{#                                    <a href="#" class="list-group-item text-center">#}
+{#                                        <h4 class="glyphicon glyphicon-credit-card"></h4><br/>Add marks#}
+{#                                    </a>#}
                                 </div>
                             </div>
                             <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9 bhoechie-tab">
@@ -245,14 +277,14 @@
                                 </div>
                                 <div class="bhoechie-tab-content">
                                     {% if coursegroup %}
-                                        <table class="table table-bordered">
+                                        <table class="table table-bordered table-sm">
 
                                             <tr>
                                                 <th>Course</th>
                                                 <th>Group</th>
                                                 <th>Shift</th>
                                                 {% if not isTeacher %}
-                                                    <th>Marks</th>
+                                                    <th class="col-xs-sm">Marks</th>
                                                 {% endif %}
                                                 <th>Action</th>
                                             </tr>
@@ -264,16 +296,24 @@
                                                     <td> {{ cg.shift }}</td>
                                                     {% if not isTeacher %}
                                                         <td>
-                                                            <input type="text" id="mark_{{ forloop.counter }}"
+                                                            <input type="number" class="input-marks"
                                                                    name="mark_{{ forloop.counter }}" maxlength="2"
-                                                                   value="{{ cg.marks }}">
+                                                                   value="{{ cg.marks }}" style="width: 60px">
                                                         </td>
                                                     {% endif %}
                                                     <td>
-                                                        <button type="button" class="btn btn-default btn-sm">
+                                                        <button type="button"
+                                                                class="btn-course-rem btn btn-default btn-sm" data-id="{{ cg.id }}">
                                                                 <span class="glyphicon glyphicon-remove"
-                                                                      aria-hidden="true"></span>
+                                                                      aria-hidden="true" data-id="{{ cg.id }}"></span>
                                                         </button>
+
+                                                        <button type="button"
+                                                                class="btn-mark-update btn btn-default btn-sm" data-id="{{ cg.id }}">
+                                                                <span class="glyphicon glyphicon-saved"
+                                                                      aria-hidden="true" data-id="{{ cg.id }}"></span>
+                                                        </button>
+
                                                     </td>
                                                 </tr>
                                             {% endfor %}
@@ -286,14 +326,14 @@
                                         </center>
                                     {% endif %}
                                 </div>
-                                <div class="bhoechie-tab-content">
-                                    <center>
-                                        <h1 class="glyphicon glyphicon-credit-card"
-                                            style="font-size:12em;color:#55518a"></h1>
-                                        <h2 style="margin-top: 0;color:#55518a">Comming Soon</h2>
-                                        <h3 style="margin-top: 0;color:#55518a">Credit Card</h3>
-                                    </center>
-                                </div>
+{#                                <div class="bhoechie-tab-content">#}
+{#                                    <center>#}
+{#                                        <h1 class="glyphicon glyphicon-credit-card"#}
+{#                                            style="font-size:12em;color:#55518a"></h1>#}
+{#                                        <h2 style="margin-top: 0;color:#55518a">Comming Soon</h2>#}
+{#                                        <h3 style="margin-top: 0;color:#55518a">Credit Card</h3>#}
+{#                                    </center>#}
+{#                                </div>#}
                             </div>
                         </div>
                     </div>

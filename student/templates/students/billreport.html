@@ -5,6 +5,18 @@
         $(document).ready(function () {
             $("#id_paid_date__lt").attr('type', 'date');
             $("#id_paid_date__gt").attr('type', 'date');
+            var isSuperuser = "{% if user.is_superuser %} 1 {% else %}0{% endif %}";
+            if (isSuperuser == "0") {
+{#                var userName = "{{ user.username.title }}"#}
+{#                $('select#id_user').find('option').each(function () {#}
+{#                    console.log($(this).val());#}
+{#                    if($(this).val() != userName) {#}
+{#                        $(this).hide();#}
+{#                    }#}
+{#                });#}
+                $('select#id_user').hide()
+            }
+            console.log(isSuperuser);
         });
     </script>
 {% endblock %}
