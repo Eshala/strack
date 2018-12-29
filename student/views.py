@@ -12,7 +12,7 @@ from django.views.generic import UpdateView
 from django.urls import reverse
 from course.models import Course
 from group.models import Group, Shift
-from student.filters import StudentFilter, TeacherFilter, BillFilter
+from student.filters import StudentFilter, TeacherFilter, BillFilter, ExamFilter
 from .models import Student, Teacher, Pay, GroupCourse
 from django.views.generic.list import ListView
 from django.utils import timezone
@@ -32,7 +32,6 @@ class AddStudent(LoginRequiredMixin, CreateView):
         'name',
         'address',
         'phone_number',
-        'discount',
         'joined_date',
         'photo',
     ]
@@ -232,9 +231,14 @@ def getIncomeExpense(bill_list):
     pass
 
 
+def exam_list(request):
+    ex_list = GroupCourse.objects.filter(person_type__contains='STU')
+    exam_filter = ExamFilter(request.GET, queryset=ex_list)
+    return render(request, 'students/markentry.html', {'filter': exam_filter})
+
 def bill_report(request):
     if request.user.is_superuser:
-        bill_list = Pay.objects.all()
+        bill_list = Pay.objects.filter(archive=False)
     else:
         bill_list = Pay.objects.filter(user=request.user)
     bill_filter = BillFilter(request.GET, queryset=bill_list)
@@ -248,10 +252,11 @@ def addCourseandShifts(request):
         shift = request.POST.get('shift')
         user_type = request.POST.get('type')
         user_id = request.POST.get('uid')
+        name = request.POST.get('name')
         discount = request.POST.get('discount')
         amount = request.POST.get('amount')
         print("{}, {}, {},{}".format(course, group, shift, user_id))
-        courseshift = GroupCourse(course=course, group=group, shift=shift, person_type=user_type, person_id = user_id, amount=int(amount), discount=int(discount))
+        courseshift = GroupCourse(course=course, group=group, shift=shift, person_type=user_type, person_id = user_id, amount=int(amount), discount=int(discount), person_name=name)
         courseshift.save()
         return HttpResponse(json.dumps({'status': True, 'message': 'Added successfully in the database'}))
     # except:

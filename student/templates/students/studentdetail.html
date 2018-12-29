@@ -88,6 +88,7 @@
                     'shift': $("#select_shift option:selected").val(),
                     'group': $("#select_group option:selected").val(),
                     'uid': "{{ student.id }}",
+                    'name': "{{ student.name }}",
                     'discount':"{% if not isTeacher %}"+$("#input_discount").val()+"{% else %}0{% endif %}",
                     'amount': "{% if not isTeacher %}"+$("#input_amount").val()+"{% else %}0{% endif %}",
                     'type': "{% if isTeacher %} TEA {% else %} STU{% endif %}",
@@ -256,13 +257,17 @@
                                             <tr class="title_row">
                                                 <th>S.n.</th>
                                                 <th>Amount (Rs)</th>
+                                                <th>Course</th>
+                                                <th>Group</th>
                                                 <th>Paid Date</th>
                                             </tr>
                                             {% for fee in fees %}
                                                 <tr>
                                                     <td> {{ forloop.counter }}</td>
                                                     <td class="amount_paid">{{ fee.amount }}</td>
-                                                    <td>{{ fee.paid_date }}</td>
+                                                    <td> {{ fee.courses }}</td>
+                                                    <td>{{ fee.group}}</td>
+                                                    <td>{{ fee.paid_date|date }}</td>
                                                 </tr>
                                             {% endfor %}
                                             <tr class="totalColumn">

@@ -12,9 +12,7 @@ class Student(models.Model):
     name = models.CharField(max_length=120)
     address = models.CharField(max_length=120)
     phone_number = models.IntegerField(null=True)
-    discount = models.IntegerField(default=0)
     photo = models.FileField(upload_to='bea', blank=True)
-    marks = models.DecimalField(max_digits=3, decimal_places=2, default=0, blank=True)
     joined_date = models.DateField(blank=False, default= datetime.now())
     timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
 
@@ -29,10 +27,18 @@ class GroupCourse(models.Model):
     group = models.CharField(max_length=100, null=True, blank=True)
     shift = models.CharField(max_length=100, null=True, blank=True)
     person_id = models.CharField(max_length=10, blank=False, default = 0)
+    person_name = models.CharField(max_length=100, blank=True)
     person_type = models.CharField(max_length = 10, blank = False, default="STU")
-    marks = models.IntegerField(default=0, blank=True)
     amount = models.IntegerField(default=0, blank=True)
     discount = models.IntegerField(default=0, blank=True)
+
+    def __str__(self):
+        return self.course + ", " + self.group + ", " + self.shift
+
+class Marks(models.Model):
+    course_detail = models.ForeignKey(GroupCourse, on_delete=models.CASCADE)
+    marks = models.DecimalField(max_length=2, default=0, decimal_places=2, max_digits=4)
+    test_type = models.CharField(max_length=4, default="D")
 
 class Teacher(models.Model):
     name = models.CharField(max_length=120)
@@ -60,6 +66,7 @@ class Pay(models.Model):
     remarks = models.TextField(blank=True)
     payto_id = models.CharField(max_length=10, blank=True, null=True, default="none")
     transaction_type = models.CharField(choices=t_type, max_length=2, default="C", blank=False)
+    archive = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['paid_date']

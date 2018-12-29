@@ -33,6 +33,8 @@
                         <li><a href="{% url 'student:paybill' %}">Add Bill</a></li>
                         {% if user.is_superuser %}
                             <li><a href="{% url 'student:report' %}">Full Report</a></li>
+                            <li><a href="{% url 'student:report' %}">Cancel Payment</a></li>
+                             <li><a href="{% url 'student:report' %}">Cancelled Payment List</a></li>
                             {% else %}
                             <li><a href="{% url 'student:report' %}">Collection Report</a></li>
                         {% endif %}
@@ -46,7 +48,9 @@
                         <li><a href="{% url 'student:add_student' %}">Add Student</a></li>
                         <li><a href="{% url 'student:list_student' %}">List Student</a></li>
                         <li><a href="{% url 'student:add_student' %}">Enquiry</a></li>
+                        <li><a href="{% url 'student:examlist' %}">Add marks</a> </li>
                         <li><a href="{% url 'student:add_student' %}">Result</a></li>
+
 
                         {#                        <li class="divider"></li>#}
                         {#                        <li><a href="#">Trash</a></li>#}

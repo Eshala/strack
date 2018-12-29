@@ -7,7 +7,7 @@
             margin-right: 20px;
         }
     </style>
-{% endblock  %}
+{% endblock %}
 {% block js %}
     <script>
         $(document).ready(function () {
@@ -15,13 +15,13 @@
             $("#id_paid_date__gt").attr('type', 'date');
             var isSuperuser = "{% if user.is_superuser %} 1 {% else %}0{% endif %}";
             if (isSuperuser == "0") {
-{#                var userName = "{{ user.username.title }}"#}
-{#                $('select#id_user').find('option').each(function () {#}
-{#                    console.log($(this).val());#}
-{#                    if($(this).val() != userName) {#}
-{#                        $(this).hide();#}
-{#                    }#}
-{#                });#}
+                {#                var userName = "{{ user.username.title }}"#}
+                {#                $('select#id_user').find('option').each(function () {#}
+                {#                    console.log($(this).val());#}
+                {#                    if($(this).val() != userName) {#}
+                {#                        $(this).hide();#}
+                {#                    }#}
+                {#                });#}
                 $('select#id_user').hide()
             }
             console.log(isSuperuser);
@@ -38,6 +38,7 @@
         <thead class="thead-dark">
         <tr>
             <th scope="col">S.N.</th>
+            <th scope="col">Bill id</th>
             <th scope="col">Paid To/By</th>
             <th scope="col">Amount (Rs)</th>
             <th scope="col">Date</th>
@@ -49,11 +50,13 @@
         {% for bill in filter.qs %}
             <tr>
                 <td>{{ forloop.counter }}</td>
+                <td>{{ bill.id }}</td>
                 <td>{% if pay.type == 'T' or pay.type == 'S' %}<a href="#">{{ bill.pay_to }}</a> {% else %}
                     {{ bill.pay_to }} {% endif %}</td>
                 <td>{{ bill.amount }}</td>
                 <td>{{ bill.paid_date }}</td>
-                <td> {% ifequal bill.transaction_type 'C' %} <span class="text-danger"> Credit </span> {% else %} <span class="text-success">Debit </span> {% endifequal %} </td>
+                <td> {% ifequal bill.transaction_type 'C' %} <span class="text-danger"> Credit </span> {% else %}
+                    <span class="text-success">Debit </span> {% endifequal %} </td>
                 <td>{% if bill.by_cheque %} No {% else %} Yes {% endif %}</td>
             </tr>
         {% endfor %}
@@ -61,11 +64,11 @@
             <td style="text-align: center">
                 <b>Expense : </b> &nbsp;&nbsp; Rs. {{ expense }}
             </td>
-             <td style="text-align: center">
+            <td style="text-align: center">
                 <b>Remaining :</b> &nbsp;&nbsp; Rs. {{ remain }}
             </td>
-             <td colspan="3" style="text-align: center">
-                <b>Total : </b>  &nbsp;&nbsp;Rs. {{ total }}
+            <td colspan="3" style="text-align: center">
+                <b>Total : </b> &nbsp;&nbsp;Rs. {{ total }}
             </td>
         </tr>
         </tbody>

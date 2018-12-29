@@ -1,6 +1,6 @@
 import django_filters
 
-from student.models import Student, Teacher, Pay
+from student.models import Student, Teacher, Pay, GroupCourse
 
 
 class StudentFilter(django_filters.FilterSet):
@@ -26,4 +26,15 @@ class BillFilter(django_filters.FilterSet):
             'transaction_type':['exact',],
             'paid_date': ['gt','lt'],
             'user': ['exact']
+        }
+
+class ExamFilter(django_filters.FilterSet):
+    class Meta:
+        model = GroupCourse
+        fields = {
+            'person_name': ['icontains', ],
+            'course': ['icontains', ],
+            'group': ['icontains', ],
+            'shift': ['icontains', ],
+
         }

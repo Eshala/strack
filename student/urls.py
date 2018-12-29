@@ -18,5 +18,6 @@ urlpatterns = [
    path('addcourseandgroup/', views.addCourseandShifts, name='addcoursegroup'),
    path('delete/', views.course_delete_view, name='deletecoursegroup'),
    path('updatemarks/', views.course_mark_update_view, name='updatecoursegroup'),
+   path('marks/', views.exam_list, name='examlist'),
 
 ]
