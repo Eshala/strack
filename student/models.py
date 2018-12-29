@@ -31,6 +31,8 @@ class GroupCourse(models.Model):
     person_id = models.CharField(max_length=10, blank=False, default = 0)
     person_type = models.CharField(max_length = 10, blank = False, default="STU")
     marks = models.IntegerField(default=0, blank=True)
+    amount = models.IntegerField(default=0, blank=True)
+    discount = models.IntegerField(default=0, blank=True)
 
 class Teacher(models.Model):
     name = models.CharField(max_length=120)

@@ -88,6 +88,8 @@
                     'shift': $("#select_shift option:selected").val(),
                     'group': $("#select_group option:selected").val(),
                     'uid': "{{ student.id }}",
+                    'discount':"{% if not isTeacher %}"+$("#input_discount").val()+"{% else %}0{% endif %}",
+                    'amount': "{% if not isTeacher %}"+$("#input_amount").val()+"{% else %}0{% endif %}",
                     'type': "{% if isTeacher %} TEA {% else %} STU{% endif %}",
                 };
                 console.log(payLoad);
@@ -273,7 +275,7 @@
 
                                 <!-- Add course -->
                                 <div class="bhoechie-tab-content">
-                                    {% include 'students/addcourse.html' with shift_data=shift group_data=group course_data=course %}
+                                    {% include 'students/addcourse.html' with shift_data=shift group_data=group course_data=course teacher=isTeacher%}
                                 </div>
                                 <div class="bhoechie-tab-content">
                                     {% if coursegroup %}

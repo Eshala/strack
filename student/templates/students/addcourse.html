@@ -2,7 +2,7 @@
     <label for="select_course">Course</label>
     <select class="form-control" id="select_course">
         {% for course in course_data %}
-            <option>{{ course }}</option>
+            <option data-id="{{ course.price }}">{{ course.title }}</option>
         {% endfor %}
     </select>
 
@@ -19,14 +19,26 @@
             <option>{{ shift }}</option>
         {% endfor %}
     </select>
+
+    {% if not teacher %}
+        <label for="input_discount">Discount</label>
+        <input type="number" class="form-control" id="input_discount" placeholder="Discount amount">
+
+
+        <label for="input_amount">Amount</label>
+        <input type="number" class="form-control" id="input_amount" placeholder="Discount amount">
+        <script>
+            $("#select_course").change(function (event) {
+                console.log("course changed");
+                var id = $("#select_course option:selected").data('id')
+                $("#input_amount").val(id);
+            });
+            var id = $("#select_course option:selected").data('id')
+            $("#input_amount").val(id);
+        </script>
+    {% endif %}
 </div>
-
-{% if not teacher %}
-    <label for="marks">Shift</label>
-    <input type="number" id="input_marks" class="form-control" maxlength="2" >
-
-{% endif %}
-<input type="submit" class="btn btn-success" value="Add Course" id="addcourse">
+<input type="submit" class="btn btn-success" value="Add Course" id="addcourse" style="margin-bottom: 10px">
 
 
 

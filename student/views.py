@@ -128,7 +128,7 @@ class StudentDetail(LoginRequiredMixin, DetailView):
         context['fees'] = fees
         context['group'] = list(Group.objects.values_list('name', flat=True))
         context['shift'] = Shift.objects.values_list('name', flat=True)
-        context['course'] = Course.objects.values_list('title', flat=True)
+        context['course'] = Course.objects.all()
         context['coursegroup'] = GroupCourse.objects.filter(person_type__contains='STU', person_id=self.kwargs['pk'])
         return context
     pass
@@ -150,7 +150,7 @@ class TeacherDetail(LoginRequiredMixin, DetailView):
         context['isTeacher'] = True
         context['group'] = list(Group.objects.values_list('name', flat=True))
         context['shift'] = Shift.objects.values_list('name', flat=True)
-        context['course'] = Course.objects.values_list('title', flat=True)
+        context['course'] = Course.objects.all()
         context['coursegroup'] = GroupCourse.objects.filter(person_type__contains='TEA', person_id=self.kwargs['pk'])
         return context
     pass
@@ -242,17 +242,19 @@ def bill_report(request):
     return render(request, 'students/billreport.html', {'filter': bill_filter, 'expense':income_expense['expense'], 'total': income_expense['total'], 'remain': income_expense['remain']})
 
 def addCourseandShifts(request):
-    try:
+    # try:
         course = request.POST.get('course')
         group = request.POST.get('group')
         shift = request.POST.get('shift')
         user_type = request.POST.get('type')
         user_id = request.POST.get('uid')
+        discount = request.POST.get('discount')
+        amount = request.POST.get('amount')
         print("{}, {}, {},{}".format(course, group, shift, user_id))
-        courseshift = GroupCourse(course=course, group=group, shift=shift, person_type=user_type, person_id = user_id)
+        courseshift = GroupCourse(course=course, group=group, shift=shift, person_type=user_type, person_id = user_id, amount=int(amount), discount=int(discount))
         courseshift.save()
         return HttpResponse(json.dumps({'status': True, 'message': 'Added successfully in the database'}))
-    except:
-        print("cannot saved")
-        return HttpResponse(json.dumps({'status': False, 'message': 'Cannot add the course, Please try again'}))
-    pass
+    # except:
+    #     print("cannot saved")
+    #     return HttpResponse(json.dumps({'status': False, 'message': 'Cannot add the course, Please try again'}))
+    # pass
