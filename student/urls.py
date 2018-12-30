@@ -19,5 +19,7 @@ urlpatterns = [
    path('delete/', views.course_delete_view, name='deletecoursegroup'),
    path('updatemarks/', views.course_mark_update_view, name='updatecoursegroup'),
    path('marks/', views.exam_list, name='examlist'),
-
+   path('billinfo/', views.getBillInfo, name='billinfo'),
+   path('cancel/', views.cancelBill, name='cancelbill'),
+   path('archive/', views.archiveBill, name='archive'),
 ]

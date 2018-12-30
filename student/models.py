@@ -71,4 +71,10 @@ class Pay(models.Model):
     class Meta:
         ordering = ['paid_date']
 
+    def toJSON(self):
+        return {'type': self.type,
+                'amount': str(self.amount),
+                'paid_date': self.paid_date.strftime('%m-%d-%Y'),
+                'pay_to': self.pay_to}
+
 

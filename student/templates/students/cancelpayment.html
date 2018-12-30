@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block js %}
+    <script>
+        $(document).ready(function () {
+            $("#btn_submit").click(function (e) {
+                var bill_id = $("#bill_id").val();
+                var doCancel = $("#btn_submit").data('cancel')
+                console.log(doCancel);
+                $.ajax({
+                    url: getUrl(doCancel),
+                    data: {
+                        'id': $("#bill_id").val()
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log(data.success);
+                        if (data.success) {
+                            $("#btn_submit").html('Proceed');
+                            if(doCancel == '0') {
+                                  $("#btn_submit").data('cancel', "1");
+                                    response = jQuery.parseJSON(data.data);
+                                    $(".detail").append(
+                                           " <p> Pay to : " + response.pay_to + "<br>" +
+                                           "Amount : " + response.amount + "<br>" +
+                                           "Paid Date : " + response.paid_date + "</p>"
+                                    );
+                            }else {
+                                  alert(data.message);
+                                  $("#btn_submit").data('cancel', "0");
+                            }
+                        }
+                    }
+                });
+            });
+
+            function getUrl(doCancel) {
+                console.log(doCancel);
+                if(doCancel == '0') {
+                    return "{% url 'student:billinfo' %}";
+                }else {
+                      return "{% url 'student:archive' %}";
+                }
+            }
+        });
+    </script>
+{% endblock js %}
+{% block content %}
+    <div class="container">
+        <form class="form-group">
+            <label for="bill_id"> Bill Id</label>
+            <input type="number" id="bill_id" , placeholder="Bill id here" class="form-control">
+        </form>
+         <div class="detail">
+
+         </div>
+        <button id="btn_submit" class="btn-success" data-cancel="0"> Cance Bill</button>
+    </div>
+{% endblock %}
+
+</div>

@@ -1,3 +1,4 @@
+from anaconda_project.internal.cli import archive
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
@@ -10,6 +11,8 @@ from django.views.generic import CreateView
 from django.views.generic import DetailView
 from django.views.generic import UpdateView
 from django.urls import reverse
+from rest_framework.serializers import Serializer
+
 from course.models import Course
 from group.models import Group, Shift
 from student.filters import StudentFilter, TeacherFilter, BillFilter, ExamFilter
@@ -24,6 +27,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Sum
 import functools
 from django.contrib import messages
+from django.core import serializers
 
 class AddStudent(LoginRequiredMixin, CreateView):
     login_url = '/admin/login/'
@@ -230,6 +234,28 @@ def getIncomeExpense(bill_list):
     return income_expense
     pass
 
+def cancelBill(request):
+    return render(request, 'students/cancelpayment.html')
+
+def archiveBill(request):
+    try:
+        id = request.GET.get('id')
+        bill = Pay.objects.get(pk=id)
+        bill.archive= True
+        bill.save()
+        return HttpResponse(json.dumps({'success': True, 'message': "Bill is cancelled successfully"}))
+
+    except Pay.DoesNotExist:
+        return HttpResponse(json.dumps({'success': False, 'message': 'Error in cancelling bill'}))
+
+def getBillInfo(request):
+    try:
+        id = request.GET.get('id')
+        bill = Pay.objects.get(pk=id)
+        return HttpResponse(json.dumps({'success': True, 'data': json.dumps(bill.toJSON())}))
+
+    except Pay.DoesNotExist:
+        return HttpResponse(json.dumps({'success': False, 'message': 'Could not found the following bill'}))
 
 def exam_list(request):
     ex_list = GroupCourse.objects.filter(person_type__contains='STU')
@@ -246,7 +272,7 @@ def bill_report(request):
     return render(request, 'students/billreport.html', {'filter': bill_filter, 'expense':income_expense['expense'], 'total': income_expense['total'], 'remain': income_expense['remain']})
 
 def addCourseandShifts(request):
-    # try:
+    try:
         course = request.POST.get('course')
         group = request.POST.get('group')
         shift = request.POST.get('shift')
@@ -259,7 +285,7 @@ def addCourseandShifts(request):
         courseshift = GroupCourse(course=course, group=group, shift=shift, person_type=user_type, person_id = user_id, amount=int(amount), discount=int(discount), person_name=name)
         courseshift.save()
         return HttpResponse(json.dumps({'status': True, 'message': 'Added successfully in the database'}))
-    # except:
-    #     print("cannot saved")
-    #     return HttpResponse(json.dumps({'status': False, 'message': 'Cannot add the course, Please try again'}))
-    # pass
+    except:
+        print("cannot saved")
+        return HttpResponse(json.dumps({'status': False, 'message': 'Cannot add the course, Please try again'}))
+    pass
