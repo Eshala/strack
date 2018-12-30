@@ -34,7 +34,7 @@
                         {% if user.is_superuser %}
                             <li><a href="{% url 'student:report' %}">Full Report</a></li>
                             <li><a href="{% url 'student:cancelbill' %}">Cancel Payment</a></li>
-                             <li><a href="{% url 'student:cancelbill' %}">Cancelled Payment List</a></li>
+                             <li><a href="{% url 'student:cancelbilllist' %}">Cancelled Payment List</a></li>
                             {% else %}
                             <li><a href="{% url 'student:report' %}">Collection Report</a></li>
                         {% endif %}

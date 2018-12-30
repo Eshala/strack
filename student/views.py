@@ -271,6 +271,16 @@ def bill_report(request):
     income_expense = getIncomeExpense(bill_list)
     return render(request, 'students/billreport.html', {'filter': bill_filter, 'expense':income_expense['expense'], 'total': income_expense['total'], 'remain': income_expense['remain']})
 
+def bill_report_cancelled(request):
+    if request.user.is_superuser:
+        bill_list = Pay.objects.filter(archive=True)
+    else:
+        bill_list = Pay.objects.filter(user=request.user)
+    bill_filter = BillFilter(request.GET, queryset=bill_list)
+    income_expense = getIncomeExpense(bill_list)
+    return render(request, 'students/billreport.html', {'filter': bill_filter, 'total': income_expense['total']})
+
+
 def addCourseandShifts(request):
     try:
         course = request.POST.get('course')

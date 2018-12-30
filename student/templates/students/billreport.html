@@ -61,12 +61,16 @@
             </tr>
         {% endfor %}
         <tr>
-            <td style="text-align: center">
-                <b>Expense : </b> &nbsp;&nbsp; Rs. {{ expense }}
-            </td>
-            <td style="text-align: center">
-                <b>Remaining :</b> &nbsp;&nbsp; Rs. {{ remain }}
-            </td>
+            {% if expense %}
+                <td style="text-align: center">
+                    <b>Expense : </b> &nbsp;&nbsp; Rs. {{ expense }}
+                </td>
+            {% endif %}
+            {% if remain %}
+                <td style="text-align: center">
+                    <b>Remaining :</b> &nbsp;&nbsp; Rs. {{ remain }}
+                </td>
+            {% endif %}
             <td colspan="3" style="text-align: center">
                 <b>Total : </b> &nbsp;&nbsp;Rs. {{ total }}
             </td>
