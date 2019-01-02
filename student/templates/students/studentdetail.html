@@ -168,13 +168,16 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container emp-profile">
+    <div class="container">
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="profile-img">
                     <img src="/media/{% if student.photo %}{{ student.photo }}{% else %}bea/profile.png{% endif %}"
                          alt=""/>
                 </div>
+                <button type="button" class="btn btn-success mt-3" id="edit_profile" style="width: 100%">Edit
+                        Profile
+                    </button>
             </div>
             <div class="col-md-6">
                 <div class="alert alert-warning alert-dismissible fade show" role="alert" id="alert">
@@ -204,20 +207,12 @@
 
         </div>
         <div class="row">
-            <div class="col-md-4">
-                <div class="profile-work" style="margin-top: 4px;">
-                    <button type="button" class="btn btn-success" id="edit_profile" style="width: 100%">Edit
-                        Profile
-                    </button>
-
-                </div>
-            </div>
-            <div class="col-md-8">
+            <div class="col-md-12">
                 <h3> {% if isTeacher %} Teacher {% else %} Student {% endif %} Details</h3>
                 <hr>
-                <div class="container">
+                <div class="">
                     <div class="row">
-                        <div class="col-md-8 col-xs-9 bhoechie-tab-container">
+                        <div class="col-md-12 col-xs-12">
                             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-8 bhoechie-tab-menu">
                                 <div class="list-group">
                                     <a href="#" class="list-group-item active text-center">

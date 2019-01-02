@@ -7,7 +7,8 @@ class StudentFilter(django_filters.FilterSet):
     class Meta:
         model = Student
         fields = {
-            'name': ['icontains', ]
+            'name': ['icontains', ],
+            'phone_number': ['icontains'],
         }
 
 
