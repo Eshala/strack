@@ -15,7 +15,7 @@ from rest_framework.serializers import Serializer
 
 from course.models import Course
 from group.models import Group, Shift
-from student.filters import StudentFilter, TeacherFilter, BillFilter, ExamFilter
+from student.filters import StudentFilter, TeacherFilter, BillFilter, ExamFilter, ResultFilter
 from .models import Student, Teacher, Pay, GroupCourse, Marks
 from django.views.generic.list import ListView
 from django.utils import timezone
@@ -291,6 +291,10 @@ def bill_report_cancelled(request):
     income_expense = getIncomeExpense(bill_list)
     return render(request, 'students/billreport.html', {'filter': bill_filter, 'total': income_expense['total']})
 
+def studentResult(request):
+    ex_list = Marks.objects.all()
+    result_filter = ResultFilter(request.GET, queryset=ex_list)
+    return render(request, 'students/student_result.html', {'filter': result_filter})
 
 def addCourseandShifts(request):
     try:

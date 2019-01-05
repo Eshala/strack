@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+{% block css %}
+    <style>
+
+    </style>
+{% endblock %}
+
+{% block js %}
+    <script>
+        $(document).ready(function () {
+            $("#id_course_detail__person_name__icontains").attr("placeholder", "Student Name");
+            $("#id_course_detail__course__icontains").attr("placeholder", "Course Name");
+            $("#id_course_detail__group__icontains").attr("placeholder", "Group Name");
+            $("#id_course_detail__shift__icontains").attr("placeholder", "Shift Name");
+
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <form action="" method="get" class="form form-inline">
+        {% bootstrap_form filter.form layout='inline' %}
+        {% bootstrap_button 'filter' %}
+    </form>
+
+    <table class="table table-bordered" id="stu-marks">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Course</th>
+            <th scope="col">Group</th>
+            <th scope="col">Shift</th>
+            <th scope="col">Exam Type</th>
+            <th class="col-xs-sm">Marks</th>
+            {#            <th class="col-xs-sm">Actions</th>#}
+        </tr>
+        </thead>
+        <tbody>
+        {% for mark in filter.qs %}
+            <tr>
+                <td>{{ mark.course_detail.person_name }}</td>
+                <td>{{ mark.course_detail.course }}</td>
+                <td>{{ mark.course_detail.group }}</td>
+                <td>{{ mark.course_detail.shift }}</td>
+                <td>{{ mark.test_type }} </td>
+                <td>{{ mark.marks }} </td>
+                {#                <td>#}
+                {#                    <button type="button">#}
+                {#                    <span class="glyphicon glyphicon-saved"#}
+                {#                          aria-hidden="true" data-id="{{ cg.id }}"></span>#}
+                {#                    </button>#}
+                {#                </td>#}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

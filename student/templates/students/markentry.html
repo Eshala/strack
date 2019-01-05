@@ -29,17 +29,19 @@
                             id: $(this).data("id"),
                             marks: marksEntered,
                             exa_type: $(this).find(".exam_type").val()
-                        })
+                        });
                     }
                 });
-                console.log(marksArray)
+                console.log(marksArray);
                 if(marksArray.length > 0) {
                 $.post("{% url 'student:updatemarks' %}", {marks_data: JSON.stringify(marksArray)})
                         .done(function (data) {
-                            console.log(data)
+                              var obj = jQuery.parseJSON(data);
+                              alert(obj.message);
+                            console.log(data);
                         });
                 } else {
-                    alert("Please add the marks")
+                    alert("Please add the marks");
                 }
             });
 
@@ -79,7 +81,8 @@
                 <td>
                     <select class="exam_type">
                         <option value="D">Daily</option>
-                        <option value="W">Weekly</option>
+                        <option value="W" selected>Weekly</option>
+                        <option value="M">Monthly</option>
                     </select>
                 </td>
                 <td>
