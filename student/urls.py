@@ -23,4 +23,5 @@ urlpatterns = [
    path('cancel/', views.cancelBill, name='cancelbill'),
    path('cancel/list', views.bill_report_cancelled, name='cancelbilllist'),
    path('archive/', views.archiveBill, name='archive'),
+   path('marks/update/', views.updateMarks, name = 'updatemarks')
 ]

@@ -1,41 +1,105 @@
 {% extends 'base.html' %}
 {% load bootstrap3 %}
+{% block css %}
+    <style>
+        .btn-update {
+            float: right;
+            margin-right: 30px;
+        }
+    </style>
+{% endblock %}
+{% block js %}
+    <script>
+        $(document).ready(function () {
+
+            $.ajaxSetup({
+                beforeSend: function (xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                    }
+                }
+            });
+
+            $(".btn").click(function () {
+                var marksArray = [];
+                $('#stu-marks tbody tr').each(function () {
+                    var marksEntered =  $(this).find(".input-marks").val();
+                    if(marksEntered) {
+                        marksArray.push({
+                            id: $(this).data("id"),
+                            marks: marksEntered,
+                            exa_type: $(this).find(".exam_type").val()
+                        })
+                    }
+                });
+                console.log(marksArray)
+                if(marksArray.length > 0) {
+                $.post("{% url 'student:updatemarks' %}", {marks_data: JSON.stringify(marksArray)})
+                        .done(function (data) {
+                            console.log(data)
+                        });
+                } else {
+                    alert("Please add the marks")
+                }
+            });
+
+        });
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+    </script>
+{% endblock %}
 {% block content %}
     <form action="" method="get" class="form form-inline">
         {% bootstrap_form filter.form layout='inline' %}
         {% bootstrap_button 'filter' %}
     </form>
 
-    <table class="table table-bordered">
+    <table class="table table-bordered" id="stu-marks">
         <thead class="thead-dark">
         <tr>
             <th scope="col">Name</th>
             <th scope="col">Course</th>
             <th scope="col">Group</th>
             <th scope="col">Shift</th>
+            <th scope="col">Exam Type</th>
             <th class="col-xs-sm">Marks</th>
-            <th class="col-xs-sm">Actions</th>
+{#            <th class="col-xs-sm">Actions</th>#}
         </tr>
         </thead>
         <tbody>
         {% for student in filter.qs %}
-            <tr>
+            <tr data-id="{{ student.id }}">
                 <td>{{ student.person_name }}</td>
                 <td>{{ student.course }}</td>
                 <td>{{ student.group }}</td>
                 <td>{{ student.shift }}</td>
                 <td>
+                    <select class="exam_type">
+                        <option value="D">Daily</option>
+                        <option value="W">Weekly</option>
+                    </select>
+                </td>
+                <td>
                     <input type="number" class="input-marks"
                            name="mark_{{ forloop.counter }}" maxlength="2"
                            value="{{ cg.marks }}" style="width: 60px">
                 </td>
-               <td> <button type="button">
-                    <span class="glyphicon glyphicon-saved"
-                          aria-hidden="true" data-id="{{ cg.id }}"></span>
-                </button>
-            </td>
+{#                <td>#}
+{#                    <button type="button">#}
+{#                    <span class="glyphicon glyphicon-saved"#}
+{#                          aria-hidden="true" data-id="{{ cg.id }}"></span>#}
+{#                    </button>#}
+{#                </td>#}
             </tr>
         {% endfor %}
         </tbody>
     </table>
+    {% buttons %}
+        <button type="submit" class="btn-update btn btn-primary">
+            {% comment %}{% bootstrap_icon "update" %}{% endcomment %} Add Marks
+        </button>
+    {% endbuttons %}
 {% endblock %}

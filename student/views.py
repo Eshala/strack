@@ -16,7 +16,7 @@ from rest_framework.serializers import Serializer
 from course.models import Course
 from group.models import Group, Shift
 from student.filters import StudentFilter, TeacherFilter, BillFilter, ExamFilter
-from .models import Student, Teacher, Pay, GroupCourse
+from .models import Student, Teacher, Pay, GroupCourse, Marks
 from django.views.generic.list import ListView
 from django.utils import timezone
 import django_filters
@@ -233,6 +233,17 @@ def getIncomeExpense(bill_list):
     income_expense['remain'] = income
     return income_expense
     pass
+
+def updateMarks(request):
+    if request.method == 'POST':
+        postData = request.POST.get('marks_data')
+        marksData = json.loads(postData)
+        for m in marksData:
+            print(m)
+            myMark = Marks(course_detail_id = m['id'], marks = m['marks'], test_type = m['exa_type'])
+            myMark.save()
+        return HttpResponse(json.dumps({'success': True, 'message': 'Marks updates successfully'}))
+    return HttpResponse(json.dumps({'success': False, 'message': 'Marks updates failed'}))
 
 def cancelBill(request):
     return render(request, 'students/cancelpayment.html')
