@@ -96,7 +96,6 @@ class updateDetail(LoginRequiredMixin, UpdateView):
         'name',
         'address',
         'phone_number',
-        'discount',
         'joined_date',
         'photo',
     ]
