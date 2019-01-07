@@ -200,14 +200,14 @@ def updatePay(request):
             subject = request.POST.get('subject')
             hour = request.POST.get('hour')
             if not subject:
-                shift = ''
+                subject = ''
             if not hour:
                 hour = 0
             remarks = request.POST.get('remarks')
             payto_id = request.POST.get('payto_id')
             transaction_type = request.POST.get('transaction_type')
             print(request.POST)
-            pay = Pay(pay_to=pay_to, amount=amount, type=type, user=request.user, group=group, courses=course, shift = shift, hours = int(hour), paid_date=timezone.now(), remarks=remarks, payto_id=payto_id, transaction_type=transaction_type)
+            pay = Pay(pay_to=pay_to, amount=amount, type=type, user=request.user, group=group, courses=course, shift = shift, subject=subject, hours = int(hour), paid_date=timezone.now(), remarks=remarks, payto_id=payto_id, transaction_type=transaction_type)
             pay.save()
             return HttpResponse(json.dumps({'status': True, 'message': str(amount)+ " paid successfully"}))
         except :

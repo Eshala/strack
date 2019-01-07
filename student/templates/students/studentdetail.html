@@ -106,10 +106,10 @@
                     'discount': "{% if not isTeacher %}"+$("#input_discount").val()+"{% else %}0{% endif %}",
                     'amount': "{% if not isTeacher %}"+$("#input_amount").val()+"{% else %}0{% endif %}",
                     'type': "{% if isTeacher %} TEA {% else %} STU{% endif %}",
-                    'subjects': $(".selectpicker").text()
+                    'subjects': $('.selectpicker option:selected').val()
 
                 };
-                console.log(payLoad);
+                console.log($('.selectpicker option:selected').val());
 
 
                 $.post("{% url 'student:addcoursegroup' %}", payLoad)
@@ -213,7 +213,7 @@
                         <b class="text-primary"> Phone Number : </b> {{ student.phone_number }}<br>
                         {% if not isTeacher %}
                             <b class="text-primary"> Joined Date: </b>{{ student.joined_date }}<br>
-                            <b class="text-primary"> Discount: </b>Rs {{ student.discount }}<br>
+{#                            <b class="text-primary"> Discount: </b>Rs {{ student.discount }}<br>#}
 
                         {% endif %}
 
@@ -239,18 +239,15 @@
                                         <h4 class="glyphicon glyphicon-road"></h4><br/>Pay Details
                                     </a>
                                     <a href="#" class="list-group-item text-center">
-                                        <h4 class="glyphicon glyphicon-home"></h4><br/>Add Course
+                                        <h4 class="glyphicon glyphicon-home"></h4><br/>Course Detail
                                     </a>
                                     <a href="#" class="list-group-item text-center">
-                                        <h4 class="glyphicon glyphicon-cutlery"></h4><br/>Course Detail
+                                        <h4 class="glyphicon glyphicon-cutlery"></h4><br/>Add Course
                                     </a>
-                                    {#                                    <a href="#" class="list-group-item text-center">#}
-                                    {#                                        <h4 class="glyphicon glyphicon-credit-card"></h4><br/>Add marks#}
-                                    {#                                    </a>#}
                                 </div>
                             </div>
                             <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9 bhoechie-tab">
-                                <!-- flight section -->
+                                <!-- Pay section -->
                                 <div class="bhoechie-tab-content active">
                                     <div class="form-group">
                                         <label for="amount" class="control-label">Amount Paid</label>
@@ -294,7 +291,7 @@
                                     </button>
 
                                 </div>
-                                <!-- train section -->
+                                <!-- Pay detail section -->
                                 <div class="bhoechie-tab-content">
                                     <center>
                                         <table class="table table-bordered" id="pay_table">
@@ -303,6 +300,10 @@
                                                 <th>Amount (Rs)</th>
                                                 <th>Course</th>
                                                 <th>Group</th>
+                                                {% if isTeacher %}
+                                                    <th> Subjects</th>
+                                                    <th>Hours</th>
+                                                {% endif %}
                                                 <th>Paid Date</th>
                                             </tr>
                                             {% for fee in fees %}
@@ -310,87 +311,68 @@
                                                     <td> {{ forloop.counter }}</td>
                                                     <td class="amount_paid">{{ fee.amount }}</td>
                                                     <td> {{ fee.courses }}</td>
-                                                    <td>{{ fee.group.name }}</td>
+                                                    <td>{{ fee.group }}</td>
+
+
+                                                    {% if isTeacher %}
+                                                        <td> {{ fee.subject }}</td>
+                                                        <td>{{ fee.hours }}</td>
+                                                    {% endif %}
                                                     <td>{{ fee.paid_date|date }}</td>
                                                 </tr>
                                             {% endfor %}
                                             <tr class="totalColumn">
-                                                <td class="totalCol" colspan="3" style="text-align: right"><b>Total
+                                                <td class="totalCol"
+                                                    colspan="{% if isTeacher %} 7 {% else %}5{% endif %}"
+                                                    style="text-align: right"><b>Total
                                                     :</b>
                                                     &nbsp;&nbsp;&nbsp;Rs {{ total }}</td>
                                             </tr>
                                         </table>
                                     </center>
                                 </div>
+                                <!-- Course detail -->
+                                <div class="bhoechie-tab-content">
+                                    <table class="table table-bordered">
+                                        <tr>
+                                            <th>Course</th>
+                                            <th>Group</th>
+                                            <th>Shift</th>
+                                            {% if not isTeacher %}
+                                                <th>Discount</th>
+                                                <th>amount</th>
+                                            {% endif %}
+                                            <th>Action</th>
+                                        </tr>
+
+                                        {% for cg in coursegroup %}
+                                            <tr>
+                                                <td> {{ cg.course }}</td>
+                                                <td> {{ cg.group }}</td>
+                                                <td> {{ cg.shift }}</td>
+                                                {% if not isTeacher %}
+                                                    <td> {{ cg.discount }}</td>
+                                                    <td>{{ cg.amount }}</td>
+                                                {% endif %}
+                                                <td>
+                                                    <button type="button"
+                                                            class="btn-course-rem btn btn-default btn-sm"
+                                                            data-id="{{ cg.id }}">
+                                                                <span class="glyphicon glyphicon-remove"
+                                                                      aria-hidden="true" data-id="{{ cg.id }}"></span>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+
+                                    </table>
+                                </div>
 
                                 <!-- Add course -->
                                 <div class="bhoechie-tab-content">
                                     {% include 'students/addcourse.html' with shift_data=shift group_data=group course_data=course sub=subject teacher=isTeacher %}
                                 </div>
-                                <div class="bhoechie-tab-content">
-                                    {% if coursegroup %}
-                                        <table class="table table-bordered table-sm">
 
-                                            <tr>
-                                                <th>Course</th>
-                                                <th>Group</th>
-                                                <th>Shift</th>
-                                                {% if not isTeacher %}
-                                                    {#                                                    <th class="col-xs-sm">Marks</th>#}
-                                                    <th>Discount</th>
-                                                    <th>amount</th>
-                                                {% endif %}
-                                                <th>Action</th>
-                                            </tr>
-
-                                            {% for cg in coursegroup %}
-                                                <tr>
-                                                    <td> {{ cg.course }}</td>
-                                                    <td> {{ cg.group }}</td>
-                                                    <td> {{ cg.shift }}</td>
-                                                    {% if not isTeacher %}
-                                                        <td> {{ cg.discount }}</td>
-                                                        <td>{{ cg.amount }}</td>
-                                                        {#                                                        <td>#}
-                                                        {#                                                            <input type="number" class="input-marks"#}
-                                                        {#                                                                   name="mark_{{ forloop.counter }}" maxlength="2"#}
-                                                        {#                                                                   value="{{ cg.marks }}" style="width: 60px">#}
-                                                        {#                                                        </td>#}
-                                                    {% endif %}
-                                                    <td>
-                                                        <button type="button"
-                                                                class="btn-course-rem btn btn-default btn-sm"
-                                                                data-id="{{ cg.id }}">
-                                                                <span class="glyphicon glyphicon-remove"
-                                                                      aria-hidden="true" data-id="{{ cg.id }}"></span>
-                                                        </button>
-
-                                                        {#                                                        <button type="button"#}
-                                                        {#                                                                class="btn-mark-update btn btn-default btn-sm" data-id="{{ cg.id }}">#}
-                                                        {#                                                                <span class="glyphicon glyphicon-saved"#}
-                                                        {#                                                                      aria-hidden="true" data-id="{{ cg.id }}"></span>#}
-                                                        {#                                                        </button>#}
-
-                                                    </td>
-                                                </tr>
-                                            {% endfor %}
-
-                                        </table>
-
-                                    {% else %}
-                                        <center>
-                                            <h3>Course is not added yet, Please add course.</h3>
-                                        </center>
-                                    {% endif %}
-                                </div>
-                                {#                                <div class="bhoechie-tab-content">#}
-                                {#                                    <center>#}
-                                {#                                        <h1 class="glyphicon glyphicon-credit-card"#}
-                                {#                                            style="font-size:12em;color:#55518a"></h1>#}
-                                {#                                        <h2 style="margin-top: 0;color:#55518a">Comming Soon</h2>#}
-                                {#                                        <h3 style="margin-top: 0;color:#55518a">Credit Card</h3>#}
-                                {#                                    </center>#}
-                                {#                                </div>#}
                             </div>
                         </div>
                     </div>
