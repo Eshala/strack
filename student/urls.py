@@ -25,4 +25,5 @@ urlpatterns = [
    path('archive/', views.archiveBill, name='archive'),
    path('marks/update/', views.updateMarks, name = 'updatemarks'),
    path('result/', views.studentResult, name='result')
+   # path('subjectlist/', )
 ]

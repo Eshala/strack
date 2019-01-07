@@ -9,7 +9,7 @@
     <label for="select_group">Group</label>
     <select class="form-control" id="select_group">
         {% for group in group_data %}
-            <option>{{ group }}</option>
+            <option>{{ group.name }}</option>
         {% endfor %}
     </select>
 
@@ -23,8 +23,6 @@
     {% if not teacher %}
         <label for="input_discount">Discount</label>
         <input type="number" class="form-control" id="input_discount" placeholder="Discount amount">
-
-
         <label for="input_amount">Amount</label>
         <input type="number" class="form-control" id="input_amount" placeholder="Discount amount">
         <script>
@@ -36,9 +34,18 @@
             var id = $("#select_course option:selected").data('id')
             $("#input_amount").val(id);
         </script>
+    {% else %}
+        <div class="form-group">
+            <label for="selectsubjects">Select Subjects</label>
+            <select id="selectsubjects" class="selectpicker form-control" multiple data-live-search="true"/>
+            {% for subject in sub %}
+                <option> {{ subject.name }}</option>
+            {% endfor %}
+        </div>
+
     {% endif %}
+  <input type="submit" class="btn btn-success" value="Add Course" id="addcourse" style="margin-bottom: 10px">
 </div>
-<input type="submit" class="btn btn-success" value="Add Course" id="addcourse" style="margin-bottom: 10px">
 
 
 

@@ -1,6 +1,16 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block css %}
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.2/css/bootstrap-select.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.2/js/bootstrap-select.min.js"></script>
+
+    <!-- (Optional) Latest compiled and minified JavaScript translation files -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.2/js/i18n/defaults-*.min.js"></script>
+
     <link href="{% static 'css/profile.css' %}" rel="stylesheet">
     <link href="{% static 'css/homemore.css' %}" rel="stylesheet">
 {% endblock %}
@@ -24,9 +34,9 @@
 
             $(".btn-mark-update").click(function (e) {
                 e.preventDefault();
-                 var id = $(e.target).data('id');
-                 var marks =$(e.target).closest("tr").find('.input-marks').val();
-                 console.log(marks);
+                var id = $(e.target).data('id');
+                var marks = $(e.target).closest("tr").find('.input-marks').val();
+                console.log(marks);
                 var payLoad = {
                     'id': id,
                     'marks': marks,
@@ -67,7 +77,11 @@
                     'pay_to': "{{ student.name }}",
                     'amount': $("#amount").val(),
                     'type': "{% if isTeacher %} TEA {% else %} STU{% endif %}",
-                    'course': "{{ student.course.title }}",
+                    'course': $("#pay_course option:selected").val(),
+                    'group': $("#pay_group option:selected").val(),
+                    'shift': $("#pay_shift option:selected").val(),
+                    'subject': $("#pay_subject option:selected").val(),
+                    'hour': $("#pay_hour").val(),
                     'remarks': 'Fees from student',
                     'payto_id': "{{ student.id }}",
                     'transaction_type': "{% if isTeacher %} C {% else %} D{% endif %}"
@@ -89,9 +103,11 @@
                     'group': $("#select_group option:selected").val(),
                     'uid': "{{ student.id }}",
                     'name': "{{ student.name }}",
-                    'discount':"{% if not isTeacher %}"+$("#input_discount").val()+"{% else %}0{% endif %}",
+                    'discount': "{% if not isTeacher %}"+$("#input_discount").val()+"{% else %}0{% endif %}",
                     'amount': "{% if not isTeacher %}"+$("#input_amount").val()+"{% else %}0{% endif %}",
                     'type': "{% if isTeacher %} TEA {% else %} STU{% endif %}",
+                    'subjects': $(".selectpicker").text()
+
                 };
                 console.log(payLoad);
 
@@ -176,8 +192,8 @@
                          alt=""/>
                 </div>
                 <button type="button" class="btn btn-success mt-3" id="edit_profile" style="width: 100%">Edit
-                        Profile
-                    </button>
+                    Profile
+                </button>
             </div>
             <div class="col-md-6">
                 <div class="alert alert-warning alert-dismissible fade show" role="alert" id="alert">
@@ -197,7 +213,7 @@
                         <b class="text-primary"> Phone Number : </b> {{ student.phone_number }}<br>
                         {% if not isTeacher %}
                             <b class="text-primary"> Joined Date: </b>{{ student.joined_date }}<br>
-                             <b class="text-primary"> Discount: </b>Rs {{ student.discount }}<br>
+                            <b class="text-primary"> Discount: </b>Rs {{ student.discount }}<br>
 
                         {% endif %}
 
@@ -216,7 +232,8 @@
                             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-8 bhoechie-tab-menu">
                                 <div class="list-group">
                                     <a href="#" class="list-group-item active text-center">
-                                        <h4 class="glyphicon glyphicon-plane"></h4><br/>Add Deposit
+                                        <h4 class="glyphicon glyphicon-plane"></h4><br/>{% if isTeacher %}
+                                        Payment {% else %}Add Deposit{% endif %}
                                     </a>
                                     <a href="#" class="list-group-item text-center">
                                         <h4 class="glyphicon glyphicon-road"></h4><br/>Pay Details
@@ -227,9 +244,9 @@
                                     <a href="#" class="list-group-item text-center">
                                         <h4 class="glyphicon glyphicon-cutlery"></h4><br/>Course Detail
                                     </a>
-{#                                    <a href="#" class="list-group-item text-center">#}
-{#                                        <h4 class="glyphicon glyphicon-credit-card"></h4><br/>Add marks#}
-{#                                    </a>#}
+                                    {#                                    <a href="#" class="list-group-item text-center">#}
+                                    {#                                        <h4 class="glyphicon glyphicon-credit-card"></h4><br/>Add marks#}
+                                    {#                                    </a>#}
                                 </div>
                             </div>
                             <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9 bhoechie-tab">
@@ -237,9 +254,41 @@
                                 <div class="bhoechie-tab-content active">
                                     <div class="form-group">
                                         <label for="amount" class="control-label">Amount Paid</label>
-                                        <input class="form-control col-md-6" type="text" id="amount"
+                                        <input class="form-control" type="text" id="amount"
                                                placeholder="Rs 00000">
+                                        <label for="pay_course" class="control-label">Course</label>
+                                        <select class="form-control" id="pay_course">
+                                            {% for cg in course %}
+                                                <option>{{ cg.title }}</option>
+                                            {% endfor %}
+                                        </select>
+
+                                        <label for="pay_shift" class="control-label">Shift</label>
+                                        <select class="form-control" id="pay_shift">
+                                            {% for shift in shift %}
+                                                <option>{{ shift }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <label for="pay_group" class="control-label">Group</label>
+                                        <select class="form-control" id="pay_group">
+                                            {% for grp in group %}
+                                                <option>{{ grp.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        {% if teacher %}
+                                            <label for="pay_subject">Select Subjects</label>
+                                            <select class="form-control" id="pay_subject" data-live-search="true">
+                                                {% for sub in subject %}
+                                                    <option> {{ sub.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <label for="pay_hour" class="control-label">Hour</label>
+                                            <input class="form-control" type="number" id="pay_hour"
+                                                   placeholder="1">
+
+                                        {% endif %}
                                     </div>
+
                                     <button class="btn btn-success" id="add_fee" style="margin-top:10px">
                                         Add Amount
                                     </button>
@@ -261,12 +310,13 @@
                                                     <td> {{ forloop.counter }}</td>
                                                     <td class="amount_paid">{{ fee.amount }}</td>
                                                     <td> {{ fee.courses }}</td>
-                                                    <td>{{ fee.group}}</td>
+                                                    <td>{{ fee.group.name }}</td>
                                                     <td>{{ fee.paid_date|date }}</td>
                                                 </tr>
                                             {% endfor %}
                                             <tr class="totalColumn">
-                                                <td class="totalCol" colspan="3" style="text-align: right"><b>Total :</b>
+                                                <td class="totalCol" colspan="3" style="text-align: right"><b>Total
+                                                    :</b>
                                                     &nbsp;&nbsp;&nbsp;Rs {{ total }}</td>
                                             </tr>
                                         </table>
@@ -275,7 +325,7 @@
 
                                 <!-- Add course -->
                                 <div class="bhoechie-tab-content">
-                                    {% include 'students/addcourse.html' with shift_data=shift group_data=group course_data=course teacher=isTeacher%}
+                                    {% include 'students/addcourse.html' with shift_data=shift group_data=group course_data=course sub=subject teacher=isTeacher %}
                                 </div>
                                 <div class="bhoechie-tab-content">
                                     {% if coursegroup %}
@@ -286,7 +336,7 @@
                                                 <th>Group</th>
                                                 <th>Shift</th>
                                                 {% if not isTeacher %}
-{#                                                    <th class="col-xs-sm">Marks</th>#}
+                                                    {#                                                    <th class="col-xs-sm">Marks</th>#}
                                                     <th>Discount</th>
                                                     <th>amount</th>
                                                 {% endif %}
@@ -301,24 +351,25 @@
                                                     {% if not isTeacher %}
                                                         <td> {{ cg.discount }}</td>
                                                         <td>{{ cg.amount }}</td>
-{#                                                        <td>#}
-{#                                                            <input type="number" class="input-marks"#}
-{#                                                                   name="mark_{{ forloop.counter }}" maxlength="2"#}
-{#                                                                   value="{{ cg.marks }}" style="width: 60px">#}
-{#                                                        </td>#}
+                                                        {#                                                        <td>#}
+                                                        {#                                                            <input type="number" class="input-marks"#}
+                                                        {#                                                                   name="mark_{{ forloop.counter }}" maxlength="2"#}
+                                                        {#                                                                   value="{{ cg.marks }}" style="width: 60px">#}
+                                                        {#                                                        </td>#}
                                                     {% endif %}
                                                     <td>
                                                         <button type="button"
-                                                                class="btn-course-rem btn btn-default btn-sm" data-id="{{ cg.id }}">
+                                                                class="btn-course-rem btn btn-default btn-sm"
+                                                                data-id="{{ cg.id }}">
                                                                 <span class="glyphicon glyphicon-remove"
                                                                       aria-hidden="true" data-id="{{ cg.id }}"></span>
                                                         </button>
 
-{#                                                        <button type="button"#}
-{#                                                                class="btn-mark-update btn btn-default btn-sm" data-id="{{ cg.id }}">#}
-{#                                                                <span class="glyphicon glyphicon-saved"#}
-{#                                                                      aria-hidden="true" data-id="{{ cg.id }}"></span>#}
-{#                                                        </button>#}
+                                                        {#                                                        <button type="button"#}
+                                                        {#                                                                class="btn-mark-update btn btn-default btn-sm" data-id="{{ cg.id }}">#}
+                                                        {#                                                                <span class="glyphicon glyphicon-saved"#}
+                                                        {#                                                                      aria-hidden="true" data-id="{{ cg.id }}"></span>#}
+                                                        {#                                                        </button>#}
 
                                                     </td>
                                                 </tr>
@@ -332,14 +383,14 @@
                                         </center>
                                     {% endif %}
                                 </div>
-{#                                <div class="bhoechie-tab-content">#}
-{#                                    <center>#}
-{#                                        <h1 class="glyphicon glyphicon-credit-card"#}
-{#                                            style="font-size:12em;color:#55518a"></h1>#}
-{#                                        <h2 style="margin-top: 0;color:#55518a">Comming Soon</h2>#}
-{#                                        <h3 style="margin-top: 0;color:#55518a">Credit Card</h3>#}
-{#                                    </center>#}
-{#                                </div>#}
+                                {#                                <div class="bhoechie-tab-content">#}
+                                {#                                    <center>#}
+                                {#                                        <h1 class="glyphicon glyphicon-credit-card"#}
+                                {#                                            style="font-size:12em;color:#55518a"></h1>#}
+                                {#                                        <h2 style="margin-top: 0;color:#55518a">Comming Soon</h2>#}
+                                {#                                        <h3 style="margin-top: 0;color:#55518a">Credit Card</h3>#}
+                                {#                                    </center>#}
+                                {#                                </div>#}
                             </div>
                         </div>
                     </div>

@@ -31,6 +31,7 @@ class GroupCourse(models.Model):
     person_type = models.CharField(max_length = 10, blank = False, default="STU")
     amount = models.IntegerField(default=0, blank=True)
     discount = models.IntegerField(default=0, blank=True)
+    subject = models.CharField(max_length=200, blank=True)
 
     def __str__(self):
         return self.course + ", " + self.group + ", " + self.shift
@@ -66,6 +67,8 @@ class Pay(models.Model):
     remarks = models.TextField(blank=True)
     payto_id = models.CharField(max_length=10, blank=True, null=True, default="none")
     transaction_type = models.CharField(choices=t_type, max_length=2, default="C", blank=False)
+    subject = models.CharField(max_length=150, blank=True, null=True)
+    hours = models.IntegerField(default=0)
     archive = models.BooleanField(default=False)
 
     class Meta:

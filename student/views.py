@@ -14,7 +14,7 @@ from django.urls import reverse
 from rest_framework.serializers import Serializer
 
 from course.models import Course
-from group.models import Group, Shift
+from group.models import Group, Shift, Subject
 from student.filters import StudentFilter, TeacherFilter, BillFilter, ExamFilter, ResultFilter
 from .models import Student, Teacher, Pay, GroupCourse, Marks
 from django.views.generic.list import ListView
@@ -128,7 +128,7 @@ class StudentDetail(LoginRequiredMixin, DetailView):
         fees = Pay.objects.filter(payto_id= self.kwargs['pk'], type__contains='STU')
         context['total'] = calculateTotal(fees)
         context['fees'] = fees
-        context['group'] = list(Group.objects.values_list('name', flat=True))
+        context['group'] = Group.objects.all()
         context['shift'] = Shift.objects.values_list('name', flat=True)
         context['course'] = Course.objects.all()
         context['coursegroup'] = GroupCourse.objects.filter(person_type__contains='STU', person_id=self.kwargs['pk'])
@@ -150,10 +150,12 @@ class TeacherDetail(LoginRequiredMixin, DetailView):
         context['fees'] = fees
         context['total'] = calculateTotal(fees)
         context['isTeacher'] = True
-        context['group'] = list(Group.objects.values_list('name', flat=True))
+        context['group'] = Group.objects.all()
         context['shift'] = Shift.objects.values_list('name', flat=True)
         context['course'] = Course.objects.all()
+        context['subject'] = Subject.objects.all()
         context['coursegroup'] = GroupCourse.objects.filter(person_type__contains='TEA', person_id=self.kwargs['pk'])
+        print(context)
         return context
     pass
 
@@ -194,15 +196,22 @@ def updatePay(request):
             type = request.POST.get('type')
             group = request.POST.get('group')
             course = request.POST.get('course')
+            shift = request.POST.get('shift')
+            subject = request.POST.get('subject')
+            hour = request.POST.get('hour')
+            if not subject:
+                shift = ''
+            if not hour:
+                hour = 0
             remarks = request.POST.get('remarks')
             payto_id = request.POST.get('payto_id')
             transaction_type = request.POST.get('transaction_type')
-            pay = Pay(pay_to=pay_to, amount=amount, type=type, user=request.user, group=group, courses=course, paid_date=timezone.now(), remarks=remarks, payto_id=payto_id, transaction_type=transaction_type)
+            print(request.POST)
+            pay = Pay(pay_to=pay_to, amount=amount, type=type, user=request.user, group=group, courses=course, shift = shift, hours = int(hour), paid_date=timezone.now(), remarks=remarks, payto_id=payto_id, transaction_type=transaction_type)
             pay.save()
             return HttpResponse(json.dumps({'status': True, 'message': str(amount)+ " paid successfully"}))
         except :
             return HttpResponse(json.dumps({'status': False, 'message': 'Problems in adding the amount'}))
-        pass
 
 def search_student(request):
     student_list = Student.objects.all()
@@ -305,8 +314,12 @@ def addCourseandShifts(request):
         name = request.POST.get('name')
         discount = request.POST.get('discount')
         amount = request.POST.get('amount')
+        subjects = ''
+        if 'subjects' in request.POST.keys() and request.POST['subjects']:
+            subjects = request.POST.get('subjects')
+
         print("{}, {}, {},{}".format(course, group, shift, user_id))
-        courseshift = GroupCourse(course=course, group=group, shift=shift, person_type=user_type, person_id = user_id, amount=int(amount), discount=int(discount), person_name=name)
+        courseshift = GroupCourse(course=course, group=group, shift=shift, person_type=user_type, person_id = user_id, amount=int(amount), discount=int(discount), person_name=name, subject= subjects)
         courseshift.save()
         return HttpResponse(json.dumps({'status': True, 'message': 'Added successfully in the database'}))
     except:
