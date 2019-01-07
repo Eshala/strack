@@ -7,6 +7,7 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import CreateView
 from django.views.generic import DetailView
 from django.views.generic import UpdateView
@@ -15,8 +16,9 @@ from rest_framework.serializers import Serializer
 
 from course.models import Course
 from group.models import Group, Shift, Subject
-from student.filters import StudentFilter, TeacherFilter, BillFilter, ExamFilter, ResultFilter
-from .models import Student, Teacher, Pay, GroupCourse, Marks
+from student.filters import StudentFilter, TeacherFilter, BillFilter, ExamFilter, ResultFilter, EnquiryStudentFilter
+from student.student_form import EnquiryStudentForm
+from .models import Student, Teacher, Pay, GroupCourse, Marks, StudentEnquiry
 from django.views.generic.list import ListView
 from django.utils import timezone
 import django_filters
@@ -218,6 +220,11 @@ def search_student(request):
     student_filter = StudentFilter(request.GET, queryset=student_list)
     return render(request, 'students/student_list.html', {'filter': student_filter, 'isTeacher': False})
 
+def search_enquiry(request):
+    student_list = StudentEnquiry.objects.all()
+    student_filter = EnquiryStudentFilter(request.GET, queryset=student_list)
+    return render(request, 'students/enquiry_student_list.html', {'filter': student_filter})
+
 def search_teacher(request):
     teacher_list = Teacher.objects.all()
     teacher_filter = TeacherFilter(request.GET, queryset=teacher_list)
@@ -255,6 +262,17 @@ def updateMarks(request):
 
 def cancelBill(request):
     return render(request, 'students/cancelpayment.html')
+
+class Enquiry(View):
+    def get(self, request):
+        form = EnquiryStudentForm()
+        return render(request, 'students/enquiry_form.html', {'form': form})
+
+    def post(self, request):
+        forms = EnquiryStudentForm(request.POST)
+        if forms.is_valid():
+            forms.save(commit=True)
+        return render(request, 'students/enquiry_form.html', {'form': forms})
 
 def archiveBill(request):
     try:

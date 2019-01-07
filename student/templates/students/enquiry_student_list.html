@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+{#{% block js %}#}
+{#    <script>#}
+{#       $(document).on("click", "#search", function () {#}
+{#           var selected_course = $( "#course option:selected" ).text();#}
+{#           var selected_group =  $( "#group option:selected" ).text();#}
+{#           console.log(selected_group, selected_course);#}
+{#        });#}
+{#    </script>#}
+{#{% endblock %}#}
+{% block content %}
+        <h3 style="text-align: center"> Student Enquiry List</h3>
+    {#    {% include 'search.html' with course_data=course group_data=group %}#}
+    <form action="" method="get" class="form form-inline">
+        {% bootstrap_form filter.form layout='inline' %}
+        {% bootstrap_button 'filter' %}
+    </form>
+
+    <table class="table table-bordered">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Address</th>
+            <th scope="col">Phone number</th>
+            <th scope="col">Intrested Course</th>
+             <th scope="col">Intrested date</th>
+        </thead>
+        <tbody>
+        {% for student in filter.qs %}
+            <tr>
+                <td>{{ student.name }}</td>
+                <td>{{ student.address }}</td>
+                <td>{{ student.phone_number }}</td>
+                <td>{{ student.intrested_course }}</td>
+                <td>{{ student.intrested_join_date }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

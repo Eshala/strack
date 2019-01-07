@@ -24,6 +24,8 @@ urlpatterns = [
    path('cancel/list', views.bill_report_cancelled, name='cancelbilllist'),
    path('archive/', views.archiveBill, name='archive'),
    path('marks/update/', views.updateMarks, name = 'updatemarks'),
-   path('result/', views.studentResult, name='result')
-   # path('subjectlist/', )
+   path('result/', views.studentResult, name='result'),
+   path('enquiry/', views.Enquiry.as_view(), name='enquiry'),
+   path('enquiry/list/', views.search_enquiry, name='enquiry_list'),
+    # path('subjectlist/', )
 ]

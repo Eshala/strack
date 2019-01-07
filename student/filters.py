@@ -1,6 +1,6 @@
 import django_filters
 
-from student.models import Student, Teacher, Pay, GroupCourse, Marks
+from student.models import Student, Teacher, Pay, GroupCourse, Marks, StudentEnquiry
 
 
 class StudentFilter(django_filters.FilterSet):
@@ -11,6 +11,13 @@ class StudentFilter(django_filters.FilterSet):
             'phone_number': ['icontains'],
         }
 
+class EnquiryStudentFilter(django_filters.FilterSet):
+    class Meta:
+        model = StudentEnquiry
+        fields = {
+            'name': ['icontains', ],
+            'phone_number': ['icontains'],
+        }
 
 class TeacherFilter(django_filters.FilterSet):
     class Meta:

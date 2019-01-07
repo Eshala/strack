@@ -2,9 +2,10 @@ from django.conf import settings
 from django.db import models
 from course.models import Course
 from group.models import Group, Shift
-from datetime import datetime
+from datetime import datetime, timezone
 from django import forms
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 
 class Student(models.Model):
@@ -19,6 +20,19 @@ class Student(models.Model):
     class Meta:
         ordering = ['name']
 
+    def __str__(self):
+        return self.name
+
+class StudentEnquiry(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.CASCADE)
+    name = models.CharField(max_length=120)
+    address = models.CharField(max_length=120)
+    phone_number = models.IntegerField(null=True)
+    intrested_join_date = models.DateField(blank=False, default= datetime.now())
+    enquiry_date = models.DateField(default=timezone.now())
+    intrested_course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    class Meta:
+        ordering = ['name']
     def __str__(self):
         return self.name
 
