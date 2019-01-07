@@ -1,4 +1,3 @@
-from anaconda_project.internal.cli import archive
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
